@@ -406,17 +406,38 @@ const preparePreviewFrame = (frame) => {
     }
     hideInternalScrollbars();
 };
+const cardPreviewFrames = (card) => [...card.querySelectorAll('.iframe-device__viewport')]
+    .map((viewport) => viewport.querySelector('iframe') || viewport._railtimePreviewFrame)
+    .filter(Boolean);
 const hydrateCard = (card) => {
     if (!card) return;
-    card.querySelectorAll('iframe[data-src]').forEach((frame) => {
+    card.querySelectorAll('.iframe-device__viewport').forEach((viewport) => {
+        let frame = viewport.querySelector('iframe') || viewport._railtimePreviewFrame;
+        if (!frame) return;
+        if (!frame.isConnected) viewport.append(frame);
+        viewport._railtimePreviewFrame = frame;
         preparePreviewFrame(frame);
-        if (!frame.hasAttribute('src')) frame.src = frame.dataset.src;
+        if (!frame.hasAttribute('src')) {
+            frame.src = frame.dataset.src || card.dataset.previewUrl || ('layouts/' + card.dataset.layoutId);
+        }
     });
     requestAnimationFrame(() => fitCardFrames(card));
 };
+const unloadCard = (card) => {
+    if (!card) return;
+    previewScrollStates.delete(card);
+    delete card.dataset.contentCenter;
+    card.querySelectorAll('.iframe-device__viewport').forEach((viewport) => {
+        const frame = viewport.querySelector('iframe');
+        if (!frame) return;
+        viewport._railtimePreviewFrame = frame;
+        frame.src = 'about:blank';
+        frame.remove();
+        frame.removeAttribute('src');
+    });
+};
 const previewScrollStates = new WeakMap();
 const bindCardPreviewScroll = (card) => {
-    card.addEventListener('pointerenter', () => hydrateCard(card));
     card.addEventListener('wheel', (event) => {
         const frames = [...card.querySelectorAll('.iframe-preview iframe')].filter((frame) => frame.src && frame.src !== 'about:blank');
         if (!frames.length) return;
@@ -497,10 +518,12 @@ const bindCardPageNavigation = (card) => {
         card.dataset.previewUrl = url;
         previewScrollStates.delete(card);
         delete card.dataset.contentCenter;
-        card.querySelectorAll('.iframe-preview iframe').forEach((frame) => {
+        cardPreviewFrames(card).forEach((frame) => {
             frame.dataset.src = url;
-            frame.src = url;
-            preparePreviewFrame(frame);
+            if (frame.isConnected) {
+                frame.src = url;
+                preparePreviewFrame(frame);
+            }
         });
     };
     nav.addEventListener('pointerdown', (event) => event.stopPropagation());
@@ -567,6 +590,7 @@ if (layoutRail && layoutRail.children.length > 1) {
         storedLayout = id;
         try { sessionStorage.setItem(sessionKey, id); } catch (_) {}
     };
+    let activePreviewCard = null;
     const updateFocus = () => {
         const railRect = layoutRail.getBoundingClientRect();
         const center = railRect.left + railRect.width / 2;
@@ -587,9 +611,13 @@ if (layoutRail && layoutRail.children.length > 1) {
             item.classList.toggle('is-after', item !== closest && itemCenter > center);
         });
         rememberFocusedCard(closest);
-        hydrateCard(closest);
-        hydrateCard(closest?.previousElementSibling);
-        hydrateCard(closest?.nextElementSibling);
+        if (closest !== activePreviewCard) {
+            items.forEach((item) => {
+                if (item !== closest) unloadCard(item);
+            });
+            activePreviewCard = closest;
+            hydrateCard(activePreviewCard);
+        }
     };
     const renderPosition = () => {
         if (layoutRail.scrollLeft) layoutRail.scrollLeft = 0;
