@@ -1,0 +1,11 @@
+Feld;Wert
+Layoutname;Signal Works
+Layout;Claude L1 – Signal Works
+Ersteller;Claude
+Konzept;Industrieller Neo-Brutalismus, dunkel-dominant. Anthrazit/Schwarz als Grundton, Hazard-Streifen als Bahn-Motiv, harte Kanten mit Offset-Schatten. Helle Segmente (Kennzahlen-Karten, Prozess-Karten, Ausruestungs-Panel, Kontaktformular) sind bewusste Akzente.
+Template-Referenz;https://brixtemplates.com/templates/industrial-webflow-template (Industrial X, BRIX Templates – nur Struktur/Anmutung frei nachempfunden, keine Inhalte, Assets oder Farben uebernommen)
+Typografie;Archivo Black fuer Display-Ueberschriften (Uppercase), Archivo fuer Fliesstext, DM Mono fuer Systemlabels, Nummern und Kennzahlen
+Farben;Feste CI-Palette (Regel 33): Signalrot #e4002b (einziger Akzent), Anthrazit/Schwarz #090c11 (Grundton), Weiss/Hell #f4f2ed (Akzentflaechen). Grundtonalitaet ueberwiegend dunkel (Regel 32).
+Seitenaufbau;Start: Autoplay-Video-Hero mit Ton-Button und Kennzahlen-Laufband, helle Kennzahlen-Karten, Intro mit Signal-Schiene, Leistungs-Bildkartenliste, Prozess-Karten, Team-Split, Deutschlandkarte links neben dem Ausruestungs-Panel ohne Segmentfoto (Regel 36), Notfall-Band. Unterseiten: Anthrazit-Seitenkoepfe mit Hazard-Kante, Leistungen mit 5 Bildkacheln und Akkordeon, Kontakt mit hellem Formular, Rechtstexte mit Signal-Markern.
+Bewegung;ScrollMagic-Reveals an realen Scrollfortschritt gebunden, Elemente am Seitenende loesen frueher aus. Video: Autoplay 1,5-fach, ohne Loop, Endbild bleibt stehen, Logo-Intro zeitversetzt, Auto-Scroll zum Inhalt. prefers-reduced-motion wird respektiert.
+Datenquellen;Shared/content/railtime-content.php; Shared/assets (inkl. start3-first-frame.jpg als Poster, Regel 39); Shared/modules/germany-map.php; Shared/vendor (Tailwind, ScrollMagic)

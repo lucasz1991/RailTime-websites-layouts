@@ -1,0 +1,13 @@
+sep=;
+Feld;Wert
+Layoutname;Signal Compact
+Ersteller;Codex
+Konzept;Dichtes Premium-Industrie-Layout mit asymmetrischem Bildraster und signalroter Informationsführung
+Template-Referenz;Eigenständige Komposition auf Basis moderner Professional-Services- und Industrial-Editorial-Layouts
+Typografie;Manrope für Inhalt und Space Mono für Nummern Status und technische Marker
+Farben;RailTime CI mit Signalrot #e4002b dunklem Anthrazit #090c11 und Hellton #f4f2ed
+Seitenaufbau;Video-Intro kompakter Einstieg Leistungs-Mosaik Laufband Unternehmenssplit Team Karte Notfallbanner Footer
+Bewegung;ScrollMagic-Scrubbing aus seitlichen und vertikalen Achsen Abschluss in der Bildschirmmitte frühere Trigger am Seitenende
+Datenquellen;Shared/content Shared/assets Shared/modules und Shared/vendor
+Navigation;Startseite erst nach Scroll sichtbar Unterseiten sofort sichtbar
+Leistungen;Fünf bebilderte Kacheln plus Akkordeon mit exakt einem geöffneten Eintrag

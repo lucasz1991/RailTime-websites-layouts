@@ -1,0 +1,14 @@
+sep=;
+Feld;Wert
+Layoutname;Horizon Signature
+Ersteller;Codex
+Konzept;Großzügiges dunkles Signatur-Layout mit klaren Bildachsen kompakten Faktenmodulen und ruhigem redaktionellem Rhythmus
+Template-Referenz;https://webflow.com/templates/html/timber-ui-kit-website-template
+Typografie;Manrope für Inhalte und Space Mono für technische Marker
+Farben;RailTime CI mit Signalrot #e4002b dunklem Anthrazit #090c11 und Hellton #f4f2ed
+Startseite;Echter Frame-1-Poster mit pulsierendem Scroll-Hinweis und vollständig scrollgesteuertem Startvideo mit dauerhaft kompaktem Schwarz-Rot-Logobanner
+Bewegung;Hybride Scroll-Trägheitssteuerung wie Noir Motion mit kurzem Nachlauf kontrolliertem Rückwärtsfahren und maximal 1-facher Geschwindigkeit danach ScrollMagic für die Inhaltssegmente
+Leistungen;Fünf bebilderte Leistungskarten und ein animiertes Detail-Akkordeon
+Unterseiten;Individuelle Seiten für Leistungen Über uns Kontakt Impressum und Datenschutz
+Datenquellen;Shared/content Shared/assets Shared/modules und Shared/vendor
+Navigation;Auf der Startseite bis zum abgeschlossenen Video-Intro verborgen auf Unterseiten sofort sichtbar

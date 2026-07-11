@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>RT Logo 3D</title>
+<style>body{margin:0;overflow:hidden;background:#f5f5f5}</style>
+<script type="importmap">
+{"imports":{
+  "three": "https://unpkg.com/three@0.161.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.161.0/examples/jsm/"
+}}
+</script>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xf5f5f5);
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(0, 0, 2.2);
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+document.body.appendChild(renderer.domElement);
+
+const light1 = new THREE.DirectionalLight(0xffffff, 1.2);
+light1.position.set(2, 2, 2);
+scene.add(light1);
+const light2 = new THREE.AmbientLight(0xffffff, 0.6);
+scene.add(light2);
+const light3 = new THREE.DirectionalLight(0xffffff, 0.5);
+light3.position.set(-2, 1, 1.5);
+scene.add(light3);
+
+let model = null;
+new GLTFLoader().load('rt-logo.glb', (gltf) => {
+  model = gltf.scene;
+  model.position.set(0, 0, 0);
+  scene.add(model);
+});
+
+/* Sanfte Präsentations-Drehung; per Maus/Touch übersteuerbar */
+let dragging = false, lastX = 0, lastY = 0, velocity = 0.005, tiltTarget = 0.1;
+addEventListener('pointerdown', (e) => { dragging = true; lastX = e.clientX; lastY = e.clientY; });
+addEventListener('pointerup', () => { dragging = false; });
+addEventListener('pointermove', (e) => {
+  if (!dragging || !model) return;
+  model.rotation.y += (e.clientX - lastX) * 0.008;
+  tiltTarget = Math.max(-0.6, Math.min(0.6, tiltTarget + (e.clientY - lastY) * 0.004));
+  lastX = e.clientX; lastY = e.clientY;
+});
+
+function animate() {
+  requestAnimationFrame(animate);
+  if (model) {
+    if (!dragging) model.rotation.y += velocity;
+    model.rotation.x += (tiltTarget - model.rotation.x) * 0.06;
+  }
+  renderer.render(scene, camera);
+}
+animate();
+
+/* Kleine Animations-API für eigene Skripte:
+   rtLogo.setSpin(0.02)  – Drehgeschwindigkeit ändern (0 = stoppen)
+   rtLogo.setPose(y, x)  – feste Pose in Radiant (z. B. 0,0 = Frontansicht) */
+window.rtLogo = {
+  get model() { return model; },
+  setSpin(v) { velocity = v; },
+  setPose(y, x = 0.1) { if (model) { model.rotation.y = y; model.rotation.x = x; } tiltTarget = x; velocity = 0; },
+};
+
+addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>

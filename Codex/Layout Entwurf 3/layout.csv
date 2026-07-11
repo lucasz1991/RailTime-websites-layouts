@@ -1,0 +1,11 @@
+sep=;
+Feld;Wert
+Layoutname;Signal Atlas
+Konzept;Dunkles editoriales Rail-System mit klaren Bildfenstern Signalachsen und kompakten Informationsmodulen
+Typografie;Manrope fuer Inhalte und Space Mono fuer Statuswerte Nummerierungen und Navigation
+Farben;Signalrot #e4002b Tiefschwarz #080b10 Stahlblau #10161e und technisches Papier #f3f1ec
+Startseite;Echter Frame-1-Poster mit pulsierendem Scroll-Hinweis und vollständig scrollgesteuertem Startvideo mit dauerhaft kompaktem Schwarz-Rot-Logobanner
+Bewegung;Hybride Scroll-Trägheitssteuerung wie Noir Motion mit kurzem Nachlauf kontrolliertem Rückwärtsfahren und maximal 1-facher Geschwindigkeit danach Parallax-Schrumpfung auf rund 38 Prozent Viewporthoehe sowie kurze ScrollMagic-Reveals
+Leistungen;Eigenstaendiges Bildmodulraster mit fuenf Servicekarten und verlinktem Detail-Akkordeon auf der Unterseite
+Unterseiten;Bestehende Funktionsseiten fuer Leistungen Ueber uns Kontakt Impressum und Datenschutz
+Navigation;Auf der Startseite erst im letzten Hero-Drittel sichtbar auf Unterseiten sofort sichtbar

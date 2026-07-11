@@ -1,0 +1,11 @@
+sep=;
+Feld;Wert
+Layoutname;Noir Motion
+Ersteller;Codex
+Konzept;Dunkles filmisches RailTime-Layout mit vollständig scrollgesteuertem Video-Intro und kompaktem Logo-Endbanner
+Video;Hybride Scroll-Trägheitssteuerung mit kurzem Nachlauf, kontrolliertem Rückwärtsfahren und einer Höchstgeschwindigkeit von 1,00; ein pulsierender Hinweis fordert vor dem Start zum Scrollen auf und Seitenscrollen wird erst nach dem echten Endframe freigegeben
+Typografie;Manrope für Inhalte und Space Mono für technische Marker
+Farben;RailTime CI mit Signalrot #e4002b dunklem Anthrazit #090c11 und Hellton #f4f2ed
+Bewegung;Native Videowiedergabe folgt geglätteten Scrollimpulsen und stoppt nach kurzer Überbrückung; ScrollMagic steuert die nachfolgenden Inhaltssegmente
+Datenquellen;Shared/content Shared/assets Shared/modules und Shared/vendor
+Navigation;Startseite bis nach dem Intro verborgen Unterseiten sofort sichtbar

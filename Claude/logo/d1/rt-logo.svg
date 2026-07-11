@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
+  <!-- RT Rail Time GmbH — Logo-Icon Redesign "d1"
+       Rotes R (glänzend), verschränkt mit dunkelgrauem T (matt-metallisch).
+       CI: Signalrot #e4002b · Anthrazit #090c11 -->
+  <defs>
+    <linearGradient id="red" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ff1a41"/>
+      <stop offset=".45" stop-color="#e4002b"/>
+      <stop offset="1" stop-color="#b80023"/>
+    </linearGradient>
+    <linearGradient id="dark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#33383f"/>
+      <stop offset=".5" stop-color="#23272d"/>
+      <stop offset="1" stop-color="#15181d"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dunkles T (liegt optisch hinter dem Rot, wird von dessen Lücken freigestellt) -->
+  <g fill="url(#dark)">
+    <path d="M60,198 H610 V360 H60 Z"/>
+    <path d="M250,360 H420 V735 H250 Z"/>
+  </g>
+
+  <!-- Rotes R -->
+  <g fill="url(#red)">
+    <!-- Deckbalken links -->
+    <path d="M60,40 H330 V190 H60 Z"/>
+    <!-- Deckbalken rechts + Bogen (Bowl) mit Mittelbalken -->
+    <path d="M400,40 H660 L840,220 V445 L725,555 H455 V415 H705 V310 L610,215 H400 Z"/>
+    <!-- Diagonales Bein -->
+    <path d="M455,555 H620 L835,805 V950 H655 Z"/>
+    <!-- Stamm links mit Stufe (Balkenbreite-Detail) -->
+    <path d="M60,368 H235 V445 H200 V950 H60 Z"/>
+  </g>
+</svg>

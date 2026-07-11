@@ -1,0 +1,10 @@
+AddDefaultCharset UTF-8
+AddCharset UTF-8 .html .php .css .js .csv .svg
+Options -MultiViews
+RewriteEngine On
+RewriteBase /RailTime/
+
+RewriteRule ^layouts/?$ index.php [L,QSA,NC]
+RewriteRule ^layouts/([1-7])/(leistungen|ueber-uns|kontakt|impressum|datenschutz)(?:\.(?:html|php))?/?$ router.php?layout=$1&page=$2 [L,QSA,NC]
+RewriteRule ^layouts/([1-7])/?$ router.php?layout=$1 [L,QSA,NC]
+RewriteRule ^layouts/([1-7])/(?:index(?:\.(?:html|php))?)?/?$ router.php?layout=$1 [L,QSA,NC]

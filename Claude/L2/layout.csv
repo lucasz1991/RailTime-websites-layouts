@@ -1,0 +1,10 @@
+Feld;Wert
+Layoutname;Editorial Press
+Ersteller;Claude
+Konzept;Dunkles redaktionelles Editorial: praezises 12-Spalten-Raster, feine Haarlinien, Zahlenkolumnen wie im Fachmagazin, typografiegetrieben mit viel dunklem Negativraum. Struktur entsteht ueber Linien und Weissraum statt Karten oder Schatten.
+Template-Referenz;https://webflow.com/templates/html/orvik-website-template
+Typografie;Fraunces (Serif-Display, Italic-Akzente in Rot) + Space Grotesk (Geometric Sans, Labels und Zahlen tabellarisch)
+Farben;Signalrot #e4002b; Anthrazit #090c11; Hell #f4f2ed (feste CI, Regel 33); dunkel-dominant mit hellen Papier-Einschueben (Regel 32)
+Seitenaufbau;Start: Video-Hero, Zahlenkolumne, Serif-Statement, nummerierter Leistungs-Index, Papier-Prozess, Team-Split, Deutschlandkarte links, Ausruestungsliste, Notfall-Rahmen. Unterseiten: Haarlinien-Pagehead, Leistungen mit fuenf Editorial-Figuren und Akkordeon, Kontakt als Papier-Formular.
+Bewegung;Dezent: ruhige scrollgebundene Fades (ScrollMagic), Zeilen-Reveals, kein Parallax. Video 1,0x ohne Beschleunigung, ohne Loop, Endbild bleibt stehen, Ton-Button.  
+Datenquellen;Shared/content/railtime-content.php; Shared/assets; Shared/modules/germany-map.php; Shared/vendor (Tailwind, ScrollMagic)
