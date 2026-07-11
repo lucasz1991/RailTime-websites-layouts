@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require __DIR__ . '/Shared/config/layout-registry.php';
+require_once __DIR__ . '/Shared/config/layout-registry.php';
 
 // Apache supplies these values through .htaccess. This fallback also lets the
 // file act as the router of PHP's built-in development server.
