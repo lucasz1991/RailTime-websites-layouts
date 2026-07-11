@@ -609,6 +609,7 @@ if (layoutRail && layoutRail.children.length > 1) {
     window.addEventListener('resize', () => { initialPosition(); fitCardFrames(); }, { passive: true });
 
     let dragging = false, startX = 0, startPosition = 0, autoTimer = 0, resumeTimer = 0, animating = false;
+    const autoEnabled = matchMedia('(min-width: 761px) and (hover: hover) and (pointer: fine)').matches;
     const animateTo = (target, complete) => {
         if (animating) return;
         animating = true;
@@ -647,11 +648,15 @@ if (layoutRail && layoutRail.children.length > 1) {
         }
     };
     const stopAuto = () => { if (autoTimer) window.clearInterval(autoTimer); autoTimer = 0; };
-    const startAuto = () => { stopAuto(); autoTimer = window.setInterval(() => move(1), 7000); };
+    const startAuto = () => {
+        stopAuto();
+        if (!autoEnabled) return;
+        autoTimer = window.setInterval(() => move(1), 7000);
+    };
     const pauseForReview = () => {
         stopAuto();
         window.clearTimeout(resumeTimer);
-        resumeTimer = window.setTimeout(startAuto, 60000);
+        if (autoEnabled) resumeTimer = window.setTimeout(startAuto, 60000);
     };
     document.addEventListener('railtime:preview-open', () => {
         stopAuto();
