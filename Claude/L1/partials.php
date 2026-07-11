@@ -11,7 +11,7 @@ function cl_content(): array {
 
 function cl_public_base(): string { return rtrim((string)($_SERVER['RT_PUBLIC_LAYOUT_BASE'] ?? '.'), '/'); }
 function cl_layout_asset(string $file): string { return rtrim((string)($_SERVER['RT_LAYOUT_ASSET_BASE'] ?? '.'), '/') . '/assets/' . ltrim($file, '/'); }
-function cl_shared(string $file): string { return '/RailTime/Shared/' . ltrim($file, '/'); }
+function cl_shared(string $file): string { return rt_project_url('Shared/' . ltrim($file, '/')); }
 function cl_image(string $file): string { return cl_shared('assets/images/' . $file); }
 function cl_video(string $file): string { return cl_shared('assets/video/' . $file); }
 

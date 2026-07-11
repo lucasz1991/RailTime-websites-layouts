@@ -11,7 +11,7 @@ function rt_layout_meta(string $dir, array $fallbackNames): array {
         if (!is_file($file)) {
             continue;
         }
-        foreach (array_map(fn($l) => str_getcsv($l, ';'), file($file)) as $row) {
+        foreach (array_map(fn($l) => str_getcsv($l, ';', '"', '\\'), file($file)) as $row) {
             if (!isset($row[0], $row[1])) {
                 continue;
             }
@@ -94,6 +94,7 @@ $layoutNames = [
 ];
 
 $entries = array_values(rt_layout_registry());
+$baseUrl = rt_project_base_url();
 ?>
 <!doctype html>
 <html lang="de">
@@ -105,9 +106,9 @@ $entries = array_values(rt_layout_registry());
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel='preconnect' href='https://esm.sh' crossorigin>
-<link rel='preload' href='/RailTime/Codex/logo/d1/rt-logo.glb' as='fetch' type='model/gltf-binary' crossorigin>
-<link rel='stylesheet' href='/RailTime/Shared/styles/logo-3d.css?v=1'>
-<script type='module' src='/RailTime/Shared/scripts/logo-3d.js?v=1'></script>
+<link rel='preload' href='<?= rt_project_url('Codex/logo/d1/rt-logo.glb') ?>' as='fetch' type='model/gltf-binary' crossorigin>
+<link rel='stylesheet' href='<?= rt_project_url('Shared/styles/logo-3d.css') ?>?v=1'>
+<script type='module' src='<?= rt_project_url('Shared/scripts/logo-3d.js') ?>?v=1'></script>
 <style>
 :root{--red:#e4002b;--ink:#0b0e13;--panel:#111820;--line:rgba(255,255,255,.12)}
 *{box-sizing:border-box}
@@ -206,7 +207,7 @@ h1{max-width:850px;margin:16px 0 12px;font-size:clamp(38px,5vw,68px);line-height
     <div class="intro-screen__beam" aria-hidden="true"></div>
     <div class="intro-screen__rails" aria-hidden="true"><i></i><i></i></div>
     <div class="intro-screen__inner">
-        <img class="intro-screen__logo" src="/RailTime/Shared/assets/images/logo-darkbg.png" alt="RailTime GmbH">
+        <img class="intro-screen__logo" src="<?= rt_project_url('Shared/assets/images/logo-darkbg.png') ?>" alt="RailTime GmbH">
         <div class="intro-screen__mark"></div>
         <p class="intro-screen__kicker">RailTime · Layout Präsentation</p>
         <h2><span class="intro-screen__title-main">Layout</span><span class="intro-screen__title-accent">Entwürfe.</span></h2>
@@ -214,11 +215,11 @@ h1{max-width:850px;margin:16px 0 12px;font-size:clamp(38px,5vw,68px);line-height
         <div class="intro-screen__meta" aria-hidden="true"><span>Konzept</span><span>Bewegung</span><span>Präzision</span></div>
         <p class="intro-screen__hint">Die Übersicht wird geöffnet</p>
         <div class='intro-screen__brand rt-logo-lockup'>
-            <div class='rt-logo-3d' data-rt-logo-3d data-model-src='/RailTime/Codex/logo/d1/rt-logo.glb' role='img' aria-label='Dreidimensionales RT-Logo'>
+            <div class='rt-logo-3d' data-rt-logo-3d data-model-src='<?= rt_project_url('Codex/logo/d1/rt-logo.glb') ?>' role='img' aria-label='Dreidimensionales RT-Logo'>
                 <canvas aria-hidden='true'></canvas>
-                <img class='rt-logo-3d__fallback' src='/RailTime/Codex/logo/d1/rt-logo.svg' alt='' aria-hidden='true'>
+                <img class='rt-logo-3d__fallback' src='<?= rt_project_url('Codex/logo/d1/rt-logo.svg') ?>' alt='' aria-hidden='true'>
             </div>
-            <img class='rt-logo-wordmark' src='/RailTime/Shared/assets/images/logo-txt.png' alt='Rail Time GmbH'>
+            <img class='rt-logo-wordmark' src='<?= rt_project_url('Shared/assets/images/logo-txt.png') ?>' alt='Rail Time GmbH'>
         </div>
     </div>
 </section>

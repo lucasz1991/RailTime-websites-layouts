@@ -12,7 +12,7 @@ function ed_content(): array {
 
 function ed_public_base(): string { return rtrim((string)($_SERVER['RT_PUBLIC_LAYOUT_BASE'] ?? '.'), '/'); }
 function ed_layout_asset(string $file): string { return rtrim((string)($_SERVER['RT_LAYOUT_ASSET_BASE'] ?? '.'), '/') . '/assets/' . ltrim($file, '/'); }
-function ed_shared(string $file): string { return '/RailTime/Shared/' . ltrim($file, '/'); }
+function ed_shared(string $file): string { return rt_project_url('Shared/' . ltrim($file, '/')); }
 function ed_image(string $file): string { return ed_shared('assets/images/' . $file); }
 function ed_video(string $file): string { return ed_shared('assets/video/' . $file); }
 function ed_num(int $i): string { return '(' . str_pad((string)$i, 2, '0', STR_PAD_LEFT) . ')'; }

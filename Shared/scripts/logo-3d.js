@@ -122,7 +122,7 @@ hosts.forEach((host) => {
   };
   document.addEventListener('visibilitychange', onVisibilityChange);
 
-  const modelUrl = host.dataset.modelSrc || '/RailTime/Codex/logo/d1/rt-logo.glb';
+  const modelUrl = host.dataset.modelSrc || new URL('../../Codex/logo/d1/rt-logo.glb', import.meta.url).href;
   new GLTFLoader().load(modelUrl, ({ scene: model }) => {
     logo = model.getObjectByName('RT_Logo') ?? model;
     scene.add(model);

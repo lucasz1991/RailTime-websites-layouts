@@ -20,11 +20,11 @@ function rt_shared_content(): array {
 }
 
 function rt_image(string $file): string {
-    return '/RailTime/Shared/assets/images/' . rawurlencode($file);
+    return rt_project_url('Shared/assets/images/' . $file);
 }
 
 function rt_video(string $file): string {
-    return '/RailTime/Shared/assets/video/' . rawurlencode($file);
+    return rt_project_url('Shared/assets/video/' . $file);
 }
 
 function rt_layout_asset(string $file): string {
@@ -82,15 +82,15 @@ function rt_document_start(string $title, int $theme, bool $home = false): array
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/RailTime/Shared/vendor/tailwind.min.css?v=5">
-<link rel="stylesheet" href="/RailTime/Shared/styles/design-system.css?v=5">
-<link rel="stylesheet" href="/RailTime/Shared/styles/layout-polish.css?v=9">
+<link rel="stylesheet" href="<?= rt_project_url('Shared/vendor/tailwind.min.css') ?>?v=5">
+<link rel="stylesheet" href="<?= rt_project_url('Shared/styles/design-system.css') ?>?v=5">
+<link rel="stylesheet" href="<?= rt_project_url('Shared/styles/layout-polish.css') ?>?v=9">
 <link rel="stylesheet" href="<?= htmlspecialchars(rt_layout_asset('assets/layout.css'), ENT_QUOTES, 'UTF-8') ?>?v=5">
 <?php if ($theme === 1): ?>
 <link rel='preconnect' href='https://esm.sh' crossorigin>
-<link rel='preload' href='/RailTime/Codex/logo/d1/rt-logo.glb' as='fetch' type='model/gltf-binary' crossorigin>
-<link rel='stylesheet' href='/RailTime/Shared/styles/logo-3d.css?v=1'>
-<script type='module' src='/RailTime/Shared/scripts/logo-3d.js?v=1'></script>
+<link rel='preload' href='<?= rt_project_url('Codex/logo/d1/rt-logo.glb') ?>' as='fetch' type='model/gltf-binary' crossorigin>
+<link rel='stylesheet' href='<?= rt_project_url('Shared/styles/logo-3d.css') ?>?v=1'>
+<script type='module' src='<?= rt_project_url('Shared/scripts/logo-3d.js') ?>?v=1'></script>
 <?php endif ?>
 </head>
 <body class="rt-shell theme-<?= $theme ?><?= $home ? ' is-home' : ' is-subpage' ?> antialiased"<?= $publicAttrs ?>>
@@ -127,17 +127,17 @@ function rt_footer(array $rt): void {
 
 function rt_document_end(bool $home = false): void {
     ?>
-<script src="/RailTime/Shared/vendor/ScrollMagic.min.js?v=5"></script>
-<script src="/RailTime/Shared/scripts/scroll-motion.js?v=6"></script>
+<script src="<?= rt_project_url('Shared/vendor/ScrollMagic.min.js') ?>?v=5"></script>
+<script src="<?= rt_project_url('Shared/scripts/scroll-motion.js') ?>?v=6"></script>
 <?php if ($home): ?>
 <script src="<?= htmlspecialchars(rt_layout_asset('assets/motion.js'), ENT_QUOTES, 'UTF-8') ?>?v=5"></script>
-<script src="/RailTime/Shared/scripts/scroll-video-engine.js?v=9"></script>
-<script src="/RailTime/Shared/scripts/home-intro.js?v=14"></script>
+<script src="<?= rt_project_url('Shared/scripts/scroll-video-engine.js') ?>?v=9"></script>
+<script src="<?= rt_project_url('Shared/scripts/home-intro.js') ?>?v=14"></script>
 <?php else: ?>
-<script src="/RailTime/Shared/scripts/subpages.js?v=5"></script>
+<script src="<?= rt_project_url('Shared/scripts/subpages.js') ?>?v=5"></script>
 <script src="<?= htmlspecialchars(rt_layout_asset('assets/motion.js'), ENT_QUOTES, 'UTF-8') ?>?v=5"></script>
 <?php endif ?>
-<script src="/RailTime/Shared/scripts/public-router.js?v=1"></script>
+<script src="<?= rt_project_url('Shared/scripts/public-router.js') ?>?v=1"></script>
 </body>
 </html>
 <?php

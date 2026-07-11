@@ -9,9 +9,9 @@ function rt_segment_hero(array $rt, int $theme): void {
     <video <?= rt_video_attrs($rt, false) ?>><source src='<?= rt_video($rt['assets']['hero_video']) ?>' type='video/mp4'></video>
     <div class='rt-intro-logo'>
         <div class='rt-logo-lockup rt-logo-lockup--hero'>
-            <div class='rt-logo-3d' data-rt-logo-3d data-model-src='/RailTime/Codex/logo/d1/rt-logo.glb' role='img' aria-label='Dreidimensionales RT-Logo'>
+            <div class='rt-logo-3d' data-rt-logo-3d data-model-src='<?= rt_project_url('Codex/logo/d1/rt-logo.glb') ?>' role='img' aria-label='Dreidimensionales RT-Logo'>
                 <canvas aria-hidden='true'></canvas>
-                <img class='rt-logo-3d__fallback' src='/RailTime/Codex/logo/d1/rt-logo.svg' alt='' aria-hidden='true'>
+                <img class='rt-logo-3d__fallback' src='<?= rt_project_url('Codex/logo/d1/rt-logo.svg') ?>' alt='' aria-hidden='true'>
             </div>
             <img class='rt-logo-wordmark' src='<?= rt_image('logo-txt.png') ?>' alt='Rail Time GmbH'>
         </div>
