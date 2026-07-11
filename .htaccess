@@ -10,6 +10,8 @@ DirectoryIndex index.php
     # Per-directory rewrites work in the domain root and in every XAMPP
     # subdirectory. A fixed RewriteBase must not be used here.
     RewriteRule ^layouts/?$ index.php [END,QSA,NC]
-    RewriteRule ^layouts/([1-7])/(leistungen|ueber-uns|kontakt|impressum|datenschutz)(?:\.(?:html|php))?/?$ layout-preview.php?layout=$1&page=$2 [END,QSA,NC]
-    RewriteRule ^layouts/([1-7])(?:/index(?:\.(?:html|php))?)?/?$ layout-preview.php?layout=$1 [END,QSA,NC]
+    # Plesk may forbid direct requests to PHP scripts other than index.php.
+    # Keep index.php as the only public PHP front controller.
+    RewriteRule ^layouts/([1-7])/(leistungen|ueber-uns|kontakt|impressum|datenschutz)(?:\.(?:html|php))?/?$ index.php?layout=$1&page=$2 [END,QSA,NC]
+    RewriteRule ^layouts/([1-7])(?:/index(?:\.(?:html|php))?)?/?$ index.php?layout=$1 [END,QSA,NC]
 </IfModule>

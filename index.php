@@ -1,6 +1,14 @@
 <?php
 require_once __DIR__ . '/Shared/config/layout-registry.php';
 
+// All public routes enter through index.php. Some managed Plesk setups deny
+// direct HTTP access to every other PHP file, while internal includes remain
+// available to the application.
+if (isset($_GET['layout'])) {
+    require __DIR__ . '/layout-preview.php';
+    exit;
+}
+
 function rt_layout_meta(string $dir, array $fallbackNames): array {
     $name = $fallbackNames[basename($dir)] ?? basename($dir);
     $desc = 'Layout-Entwurf nach den verbindlichen Projektregeln.';
