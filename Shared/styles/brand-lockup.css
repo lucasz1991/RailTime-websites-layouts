@@ -39,7 +39,8 @@
 
 .rt-nav__brand .rt-brand-lockup--nav .rt-brand-lockup__wordmark {
   position: static;
-  width: clamp(112px, 10.4vw, 146px);
+  /* Der sichtbare „RAIL TIME“-Schriftzug liegt damit bei rund 75 % der Markenhöhe. */
+  width: clamp(219px, 18.7vw, 269px);
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .22));
 }
 
@@ -110,7 +111,7 @@ body .rt-hero .rt-intro-logo .rt-brand-lockup--hero .rt-brand-lockup__wordmark {
 
 @media (max-width: 620px) {
   .rt-nav__brand .rt-brand-lockup--nav .rt-brand-lockup__mark { width: 28px; }
-  .rt-nav__brand .rt-brand-lockup--nav .rt-brand-lockup__wordmark { width: 98px; }
+  .rt-nav__brand .rt-brand-lockup--nav .rt-brand-lockup__wordmark { width: 198px; }
 
   .rt-hero .rt-intro-logo .rt-brand-lockup--hero { gap: 11px; padding-inline: 12px; }
   body .rt-hero .rt-intro-logo .rt-brand-lockup--hero .rt-brand-lockup__mark { width: 80px; }
@@ -122,7 +123,7 @@ body .rt-hero .rt-intro-logo .rt-brand-lockup--hero .rt-brand-lockup__wordmark {
 
 @media (max-width: 380px) {
   .rt-nav__brand .rt-brand-lockup--nav .rt-brand-lockup__mark { width: 25px; }
-  .rt-nav__brand .rt-brand-lockup--nav .rt-brand-lockup__wordmark { width: 88px; }
+  .rt-nav__brand .rt-brand-lockup--nav .rt-brand-lockup__wordmark { width: 177px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -232,7 +232,7 @@ html.lite-mode .card,html.lite-mode .card.is-before,html.lite-mode .card.is-afte
 html.lite-mode .card{opacity:.78}
 html.lite-mode .card.is-focused{opacity:1;box-shadow:none}
 html.lite-mode .iframe-preview__refresh,html.lite-mode .iframe-preview__nav,html.lite-mode .live-preview__bar,html.lite-mode .live-preview::backdrop{backdrop-filter:none}
-@media(max-width:640px){.wrap{padding-top:1vh}.carousel__head p{display:none}.card{flex-basis:96vw;height:min(760px,88vh);min-height:600px}.card__body{padding:20px 20px 15px}.card p{font-size:13px;margin-bottom:12px}.badges{margin-bottom:12px}.shots{height:auto}.iframe-device--desktop{top:16px;left:11%;width:78%}.iframe-device--tablet{top:25%;bottom:auto;left:2%;width:29%}.iframe-device--mobile{top:32%;right:2%;bottom:auto;width:16%}.iframe-preview__page{min-width:86px}.live-preview__bar{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;padding:9px 10px}.live-preview__eyebrow{display:none}.live-preview__title{font-size:14px}.live-preview__actions{gap:4px}.live-preview__device{gap:0;padding:8px 7px;font-size:0}.live-preview__device::before{margin:0}.live-preview__close{width:36px;margin-left:2px}.live-preview__stage{padding:12px}}
+@media(max-width:640px){.wrap{padding-top:1vh}.carousel__head p{display:none}.card{flex-basis:96vw;height:min(760px,88vh);min-height:600px}.card__body{padding:20px 20px 15px}.card p{font-size:13px;margin-bottom:12px}.badges{margin-bottom:12px}.shots{height:auto}.iframe-device--desktop{top:16px;left:7%;width:86%}.iframe-device--tablet,.iframe-device--mobile{display:none}.iframe-preview__page{min-width:86px}.live-preview__bar{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;padding:9px 10px}.live-preview__eyebrow{display:none}.live-preview__title{font-size:14px}.live-preview__actions{gap:4px}.live-preview__device{gap:0;padding:8px 7px;font-size:0}.live-preview__device::before{margin:0}.live-preview__device[data-preview-device="tablet"],.live-preview__device[data-preview-device="mobile"]{display:none}.live-preview__close{width:36px;margin-left:2px}.live-preview__stage{padding:12px}}
 </style>
 </head>
 <body class="intro-active">
@@ -340,12 +340,16 @@ html.lite-mode .iframe-preview__refresh,html.lite-mode .iframe-preview__nav,html
     </div>
 </dialog>
 <script>
+const mobileOverviewQuery = matchMedia('(max-width: 640px)');
+const isMobileOverview = () => mobileOverviewQuery.matches;
+const isConstrainedPreviewMode = () => isMobileOverview() || matchMedia('(max-width: 760px), (hover: none), (pointer: coarse)').matches;
+
 const fitCardFrames = (scope = document) => {
     scope.querySelectorAll('.iframe-preview').forEach((stage) => {
         const desktop = stage.querySelector('.iframe-device--desktop');
         const tablet = stage.querySelector('.iframe-device--tablet');
         const mobile = stage.querySelector('.iframe-device--mobile');
-        if (!desktop || !tablet || !mobile || !stage.clientWidth || !stage.clientHeight) return;
+        if (!desktop || !stage.clientWidth || !stage.clientHeight) return;
         const width = stage.clientWidth;
         const height = stage.clientHeight;
         const setBox = (element, box) => {
@@ -356,6 +360,15 @@ const fitCardFrames = (scope = document) => {
             element.style.top = box.top == null ? 'auto' : box.top + 'px';
             element.style.bottom = box.bottom == null ? 'auto' : box.bottom + 'px';
         };
+        if (isMobileOverview()) {
+            const top = 16;
+            const navReserve = 58;
+            const desktopWidth = Math.max(180, Math.min(width * .86, Math.max(180, height - top - navReserve) * 1.49));
+            setBox(desktop, { width: desktopWidth, height: desktopWidth / 1.49, left: (width - desktopWidth) / 2, top });
+            return;
+        }
+
+        if (!tablet || !mobile) return;
         const compact = innerWidth <= 1050 || width <= 900;
         if (!compact) {
             const top = 18;
@@ -477,12 +490,15 @@ document.querySelectorAll('.iframe-device__viewport').forEach((viewport) => {
     viewport.dataset.previewTitle = frame.title || '';
 });
 const cardPreviewFrames = (card) => [...card.querySelectorAll('.iframe-device__viewport iframe')];
-const constrainedPreviewMode = matchMedia('(max-width: 760px), (hover: none), (pointer: coarse)').matches;
 const hydrateCard = (card) => {
     if (!card) return;
     card.querySelectorAll('.iframe-device__viewport').forEach((viewport) => {
+        const desktopViewport = viewport.closest('.iframe-device--desktop');
         const mobileViewport = viewport.closest('.iframe-device--mobile');
-        if (constrainedPreviewMode && !mobileViewport) {
+        const shouldKeepViewport = isMobileOverview()
+            ? Boolean(desktopViewport)
+            : !isConstrainedPreviewMode() || Boolean(mobileViewport);
+        if (!shouldKeepViewport) {
             const frame = viewport.querySelector('iframe');
             if (frame?.isConnected) {
                 frame.src = 'about:blank';
@@ -731,10 +747,10 @@ if (layoutRail && layoutRail.children.length > 1) {
         hydrateCard(activePreviewCard);
     }, { once: true });
     document.addEventListener('railtime:preview-open', () => {
-        if (constrainedPreviewMode) unloadCard(activePreviewCard);
+        if (isConstrainedPreviewMode()) unloadCard(activePreviewCard);
     });
     document.addEventListener('railtime:preview-close', () => {
-        if (constrainedPreviewMode && previewsReady) hydrateCard(activePreviewCard);
+        if (isConstrainedPreviewMode() && previewsReady) hydrateCard(activePreviewCard);
     });
     const renderPosition = () => {
         if (layoutRail.scrollLeft) layoutRail.scrollLeft = 0;
@@ -830,7 +846,7 @@ if (preview) {
     let activeDevice = 'desktop';
     let previewOpener = null;
     const setActiveDevice = (device) => {
-        activeDevice = devices[device] ? device : 'desktop';
+        activeDevice = isMobileOverview() ? 'desktop' : (devices[device] ? device : 'desktop');
         shell.dataset.mode = activeDevice;
         shell.setAttribute('aria-label', 'Interaktive ' + devices[activeDevice].label + '-Vorschau');
         preview.querySelectorAll('[data-preview-device]').forEach(button => {
@@ -899,7 +915,11 @@ if (preview) {
         previewOpener = null;
     });
     frame.addEventListener('load', () => { if (preview.open) fitPreview(); });
-    window.addEventListener('resize', () => { if (preview.open) fitPreview(); }, { passive: true });
+    window.addEventListener('resize', () => {
+        if (!preview.open) return;
+        if (isMobileOverview()) setActiveDevice('desktop');
+        fitPreview();
+    }, { passive: true });
 }
 </script>
 </body>
