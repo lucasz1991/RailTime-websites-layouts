@@ -2,7 +2,27 @@ AddDefaultCharset UTF-8
 AddCharset UTF-8 .html .php .css .js .csv .svg
 Options -MultiViews
 
-DirectoryIndex index.php
+DirectoryIndex index.php index.html
+
+# Browser-Caching für statische Assets (entlastet mobile Geräte und Wiederbesuche)
+AddType model/gltf-binary .glb
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 7 days"
+    ExpiresByType application/javascript "access plus 7 days"
+    ExpiresByType text/javascript "access plus 7 days"
+    ExpiresByType image/png "access plus 30 days"
+    ExpiresByType image/jpeg "access plus 30 days"
+    ExpiresByType image/svg+xml "access plus 30 days"
+    ExpiresByType video/mp4 "access plus 30 days"
+    ExpiresByType model/gltf-binary "access plus 30 days"
+    ExpiresByType font/woff2 "access plus 365 days"
+</IfModule>
+<IfModule mod_headers.c>
+    <FilesMatch "\.(css|js|png|jpe?g|svg|mp4|glb|woff2)$">
+        Header set Cache-Control "public, max-age=604800"
+    </FilesMatch>
+</IfModule>
 
 <IfModule mod_rewrite.c>
     RewriteEngine On

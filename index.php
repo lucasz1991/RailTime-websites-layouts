@@ -110,6 +110,17 @@ $baseUrl = rt_project_base_url();
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RailTime Layout-Entwuerfe</title>
+<script>
+/* Lite-Mode für Touch-/Mobilgeräte und schwache Hardware (iOS-Stabilität):
+   deaktiviert GPU-lastige Intro-Effekte und das WebGL-Logo. */
+(function () {
+    var n = navigator;
+    var lite = matchMedia('(hover: none), (pointer: coarse)').matches
+        || (n.deviceMemory && n.deviceMemory <= 4)
+        || /iPhone|iPad|iPod/.test(n.userAgent || '');
+    if (lite) document.documentElement.classList.add('lite-mode');
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -188,7 +199,10 @@ h1{max-width:850px;margin:16px 0 12px;font-size:clamp(38px,5vw,68px);line-height
 .iframe-device:hover,.iframe-device:focus-visible,.card.is-focused .iframe-device:hover,.card.is-focused .iframe-device:focus-visible{outline:0;box-shadow:0 16px 38px rgba(0,0,0,.5),0 0 24px rgba(228,0,43,.18)}
 .iframe-device--desktop{z-index:1;top:26px;left:17%;width:66%;padding:6px 6px 28px;aspect-ratio:1.49;overflow:visible;border-radius:13px 13px 4px 4px}.iframe-device--desktop::before{content:"";position:absolute;z-index:-1;left:43%;bottom:-21px;width:14%;height:22px;background:linear-gradient(90deg,#151d27,#3a4655,#151d27)}.iframe-device--desktop::after{content:"";position:absolute;z-index:-1;left:31%;bottom:-27px;width:38%;height:7px;border-radius:9px 9px 3px 3px;background:linear-gradient(90deg,#18212b,#465465,#18212b);box-shadow:0 6px 12px rgba(0,0,0,.42)}.iframe-device--tablet{z-index:3;bottom:56px;left:2%;width:24%;aspect-ratio:.762}.iframe-device--mobile{z-index:4;right:6%;bottom:56px;width:10.5%;aspect-ratio:.5;border-radius:15px}
 .iframe-device__viewport{position:absolute;inset:6px;overflow:hidden;background:#05070a}.iframe-device--desktop .iframe-device__viewport{inset:6px 6px 28px}
-.iframe-device__viewport iframe{position:absolute;top:0;left:0;border:0;transform-origin:top left;pointer-events:none;background:#05070a;will-change:transform}
+.iframe-device__viewport iframe{position:absolute;top:0;left:0;border:0;transform-origin:top left;pointer-events:none;background:#05070a;will-change:transform;opacity:0}
+/* Bildschirme sind schwarz ("aus") und schalten sich nach dem Laden aller Geräte synchron ein */
+.iframe-device__viewport iframe.is-on{opacity:1;animation:rtScreenOn .62s cubic-bezier(.25,.6,.3,1) both}
+@keyframes rtScreenOn{0%{opacity:0;filter:brightness(3.4) saturate(.15)}12%{opacity:1;filter:brightness(2.6) saturate(.3)}45%{filter:brightness(1.5) saturate(.8)}100%{opacity:1;filter:brightness(1) saturate(1)}}
 .iframe-device small{display:none}
 .iframe-preview__nav{position:absolute;z-index:8;left:50%;bottom:8px;display:flex;align-items:center;gap:10px;transform:translateX(-50%);padding:5px;border:1px solid rgba(255,255,255,.13);background:rgba(7,10,14,.88);box-shadow:0 10px 24px rgba(0,0,0,.35);backdrop-filter:blur(10px)}.iframe-preview__nav button{display:grid;place-items:center;width:31px;height:28px;border:1px solid rgba(255,255,255,.16);background:#141b23;color:#fff;font-size:17px;cursor:pointer}.iframe-preview__nav button:hover{border-color:var(--red);background:var(--red)}.iframe-preview__page{min-width:104px;text-align:center;color:#dce2e9;font:500 9px 'DM Mono',monospace;letter-spacing:.1em;text-transform:uppercase}
 .empty{padding:34px;border:1px dashed #4b5563;color:#929aa5}
@@ -206,6 +220,18 @@ h1{max-width:850px;margin:16px 0 12px;font-size:clamp(38px,5vw,68px);line-height
 .live-preview__device-shell[data-mode="mobile"]{--left-bezel:10px;--right-bezel:10px;--top-bezel:18px;--bottom-bezel:12px;border-radius:36px;background:linear-gradient(145deg,#56616e,#090c10 48%,#313b46);box-shadow:0 32px 90px rgba(0,0,0,.72),inset 0 0 0 1px rgba(255,255,255,.2)}.live-preview__device-shell[data-mode="mobile"]::before{content:"";position:absolute;z-index:5;left:50%;top:7px;width:52px;height:8px;border-radius:12px;background:#030407;transform:translateX(-50%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}.live-preview__device-shell[data-mode="mobile"] .live-preview__viewport{border-radius:24px}
 @media(min-width:1800px){.card{flex-basis:88vw;min-height:760px}.card__body{padding-left:clamp(40px,3.2vw,72px);padding-right:clamp(40px,3.2vw,72px)}}
 @media(max-width:1050px){.card{flex-basis:94vw;height:calc(100dvh - 76px);min-height:620px;opacity:.72}.card.is-before{transform:perspective(1400px) rotateY(5deg) translateZ(-48px) scale(.94)}.card.is-after{transform:perspective(1400px) rotateY(-5deg) translateZ(-48px) scale(.94)}.iframe-device--desktop{top:18px;left:15%;width:70%}.iframe-device--tablet{top:37%;bottom:auto;left:4%;width:25%}.iframe-device--mobile{top:44%;right:4%;bottom:auto;width:13%}}
+/* Lite-Mode: statische Gradients statt animierter Conic-/Blend-Ebenen, kein 3D-Logo,
+   keine Perspektiv-Transforms und Backdrop-Filter — verhindert Safari-GPU-Abstürze auf iOS */
+html.lite-mode .intro-screen::before{animation:none;inset:0;background:radial-gradient(circle at 50% 42%,rgba(228,0,43,.24),transparent 44%),#05070a}
+html.lite-mode .intro-screen::after,html.lite-mode .intro-screen__grid,html.lite-mode .intro-screen__beam,html.lite-mode .intro-screen__rails{display:none}
+html.lite-mode .intro-screen__signature strong{text-shadow:none}
+html.lite-mode .intro-screen__hint::after{animation:none}
+html.lite-mode .rt-logo-3d canvas{display:none}
+html.lite-mode .grid{perspective:none}
+html.lite-mode .card,html.lite-mode .card.is-before,html.lite-mode .card.is-after{transform:none;filter:none;transition:border-color .3s ease,opacity .35s ease}
+html.lite-mode .card{opacity:.78}
+html.lite-mode .card.is-focused{opacity:1;box-shadow:none}
+html.lite-mode .iframe-preview__refresh,html.lite-mode .iframe-preview__nav,html.lite-mode .live-preview__bar,html.lite-mode .live-preview::backdrop{backdrop-filter:none}
 @media(max-width:640px){.wrap{padding-top:1vh}.carousel__head p{display:none}.card{flex-basis:96vw;height:min(760px,88vh);min-height:600px}.card__body{padding:20px 20px 15px}.card p{font-size:13px;margin-bottom:12px}.badges{margin-bottom:12px}.shots{height:auto}.iframe-device--desktop{top:16px;left:11%;width:78%}.iframe-device--tablet{top:25%;bottom:auto;left:2%;width:29%}.iframe-device--mobile{top:32%;right:2%;bottom:auto;width:16%}.iframe-preview__page{min-width:86px}.live-preview__bar{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;padding:9px 10px}.live-preview__eyebrow{display:none}.live-preview__title{font-size:14px}.live-preview__actions{gap:4px}.live-preview__device{gap:0;padding:8px 7px;font-size:0}.live-preview__device::before{margin:0}.live-preview__close{width:36px;margin-left:2px}.live-preview__stage{padding:12px}}
 </style>
 </head>
@@ -406,6 +432,44 @@ const preparePreviewFrame = (frame) => {
     }
     hideInternalScrollbars();
 };
+/* Vor jedem src-Wechsel bewaffnen: Promise, das mit dem load-Event des Frames erfüllt wird */
+const armFrameLoad = (frame) => {
+    frame.classList.remove('is-on');
+    frame.__rtLoadPromise = new Promise((resolve) => {
+        frame.addEventListener('load', resolve, { once: true });
+        window.setTimeout(resolve, 4500); // Sicherheitsnetz: nie ewig schwarz bleiben
+    });
+};
+/* Synchrones Einschalten: erst wenn ALLE Geräte-Frames der Karte geladen sind
+   UND mindestens 260ms seit Kartenfokus vergangen sind, gehen alle Bildschirme
+   gleichzeitig an (Regel: keine Verzögerung zwischen den Geräten). */
+const powerOnCard = (card) => {
+    const frames = [...card.querySelectorAll('.iframe-preview iframe')].filter((frame) => frame.isConnected && frame.hasAttribute('src'));
+    if (!frames.length) return;
+    const token = Symbol('power-on');
+    card.__rtPowerToken = token;
+    frames.forEach((frame) => frame.classList.remove('is-on'));
+    const loads = frames.map((frame) => frame.__rtLoadPromise || Promise.resolve());
+    Promise.all([...loads, new Promise((resolve) => window.setTimeout(resolve, 260))]).then(() => {
+        if (card.__rtPowerToken !== token) return;
+        requestAnimationFrame(() => {
+            if (card.__rtPowerToken !== token) return;
+            fitCardFrames(card);
+            frames.forEach((frame) => {
+                if (!frame.isConnected) return;
+                frame.classList.add('is-on');
+                /* Animation/Video in allen Frames im selben Moment neu starten */
+                try {
+                    frame.contentDocument?.querySelectorAll('video').forEach((video) => {
+                        try { video.currentTime = 0; } catch (_) {}
+                        video.play?.()?.catch?.(() => {});
+                    });
+                    frame.contentWindow?.dispatchEvent(new frame.contentWindow.CustomEvent('railtime:preview-sync'));
+                } catch (_) {}
+            });
+        });
+    });
+};
 document.querySelectorAll('.iframe-device__viewport').forEach((viewport) => {
     const frame = viewport.querySelector('iframe');
     if (!frame) return;
@@ -436,13 +500,18 @@ const hydrateCard = (card) => {
         }
         preparePreviewFrame(frame);
         if (!frame.hasAttribute('src')) {
+            armFrameLoad(frame);
             frame.src = frame.dataset.src || card.dataset.previewUrl || ('layouts/' + card.dataset.layoutId);
+        } else if (!frame.__rtLoadPromise) {
+            frame.__rtLoadPromise = Promise.resolve();
         }
     });
     requestAnimationFrame(() => fitCardFrames(card));
+    powerOnCard(card);
 };
 const unloadCard = (card) => {
     if (!card) return;
+    card.__rtPowerToken = null;
     previewScrollStates.delete(card);
     delete card.dataset.contentCenter;
     card.querySelectorAll('.iframe-device__viewport').forEach((viewport) => {
@@ -541,10 +610,12 @@ const bindCardPageNavigation = (card) => {
             const frame = viewport.querySelector('iframe');
             if (frame) {
                 frame.dataset.src = url;
+                armFrameLoad(frame);
                 frame.src = url;
                 preparePreviewFrame(frame);
             }
         });
+        powerOnCard(card);
     };
     nav.addEventListener('pointerdown', (event) => event.stopPropagation());
     nav.querySelector('[data-page-prev]')?.addEventListener('click', (event) => { event.stopPropagation(); showPage(pageIndex - 1); });
@@ -565,8 +636,10 @@ const bindCardRefresh = (card) => {
         card.querySelectorAll('.iframe-preview iframe').forEach((frame) => {
             frame.dataset.src = cleanUrl;
             frame.addEventListener('load', () => fitCardFrames(card), { once: true });
+            armFrameLoad(frame);
             frame.src = refreshUrl.href;
         });
+        powerOnCard(card);
         button.classList.remove('is-refreshing');
         void button.offsetWidth;
         button.classList.add('is-refreshing');
@@ -579,14 +652,23 @@ document.querySelectorAll('.card').forEach((card) => {
     bindCardRefresh(card);
 });
 window.addEventListener('resize', () => fitCardFrames(), { passive: true });
-window.setTimeout(() => {
+{
     const intro = document.querySelector('.intro-screen');
-    intro?.classList.add('is-leaving');
-    document.body.classList.remove('intro-active');
-    document.dispatchEvent(new CustomEvent('railtime:overview-intro-dispose'));
-    document.dispatchEvent(new CustomEvent('railtime:overview-ready'));
-    window.setTimeout(() => intro?.remove(), 1400);
-}, 5200);
+    const liteIntro = document.documentElement.classList.contains('lite-mode');
+    let introDone = false;
+    const dismissIntro = () => {
+        if (introDone) return;
+        introDone = true;
+        intro?.classList.add('is-leaving');
+        document.body.classList.remove('intro-active');
+        document.dispatchEvent(new CustomEvent('railtime:overview-intro-dispose'));
+        document.dispatchEvent(new CustomEvent('railtime:overview-ready'));
+        window.setTimeout(() => intro?.remove(), 1400);
+    };
+    /* Lite-Mode (iOS/Touch): deutlich kürzeres Intro; Tippen überspringt sofort */
+    window.setTimeout(dismissIntro, liteIntro ? 2600 : 5200);
+    intro?.addEventListener('pointerdown', dismissIntro, { once: true });
+}
 const layoutRail = document.querySelector('[data-layout-rail]');
 if (layoutRail && layoutRail.children.length > 1) {
     const track = document.createElement('div');

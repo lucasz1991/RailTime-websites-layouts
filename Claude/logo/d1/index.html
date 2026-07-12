@@ -1,81 +1,95 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-<meta charset="utf-8">
-<title>RT Logo 3D</title>
-<style>body{margin:0;overflow:hidden;background:#f5f5f5}</style>
-<script type="importmap">
-{"imports":{
-  "three": "https://unpkg.com/three@0.161.0/build/three.module.js",
-  "three/addons/": "https://unpkg.com/three@0.161.0/examples/jsm/"
-}}
-</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RailTime Claude D1 – RT Logo 3D</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, system-ui, sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; overflow: hidden; background: radial-gradient(circle at 50% 38%, #29303a, #090c11 68%); }
+    canvas { display: block; width: 100vw; height: 100vh; touch-action: none; }
+    .caption { position: fixed; left: 22px; bottom: 18px; z-index: 2; color: #f4f2ed; letter-spacing: .04em; pointer-events: none; }
+    .caption strong { display: block; margin-bottom: 5px; font-size: 14px; text-transform: uppercase; }
+    .caption span { color: #aeb4bd; font-size: 12px; }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
+      }
+    }
+  </script>
 </head>
 <body>
-<script type="module">
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+  <div class="caption"><strong>RailTime RT · Claude D1</strong><span>Ziehen zum Drehen · Mausrad zum Zoomen · schmale Fuge (16/1000)</span></div>
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xf5f5f5);
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0, 0, 2.2);
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(window.devicePixelRatio);
-document.body.appendChild(renderer.domElement);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(35, innerWidth / innerHeight, 0.01, 100);
+    camera.position.set(0.15, 0.08, 2.35);
 
-const light1 = new THREE.DirectionalLight(0xffffff, 1.2);
-light1.position.set(2, 2, 2);
-scene.add(light1);
-const light2 = new THREE.AmbientLight(0xffffff, 0.6);
-scene.add(light2);
-const light3 = new THREE.DirectionalLight(0xffffff, 0.5);
-light3.position.set(-2, 1, 1.5);
-scene.add(light3);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.25;
+    document.body.appendChild(renderer.domElement);
 
-let model = null;
-new GLTFLoader().load('rt-logo.glb', (gltf) => {
-  model = gltf.scene;
-  model.position.set(0, 0, 0);
-  scene.add(model);
-});
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.enablePan = false;
+    controls.minDistance = 1.25;
+    controls.maxDistance = 4;
 
-/* Sanfte Präsentations-Drehung; per Maus/Touch übersteuerbar */
-let dragging = false, lastX = 0, lastY = 0, velocity = 0.005, tiltTarget = 0.1;
-addEventListener('pointerdown', (e) => { dragging = true; lastX = e.clientX; lastY = e.clientY; });
-addEventListener('pointerup', () => { dragging = false; });
-addEventListener('pointermove', (e) => {
-  if (!dragging || !model) return;
-  model.rotation.y += (e.clientX - lastX) * 0.008;
-  tiltTarget = Math.max(-0.6, Math.min(0.6, tiltTarget + (e.clientY - lastY) * 0.004));
-  lastX = e.clientX; lastY = e.clientY;
-});
+    scene.add(new THREE.HemisphereLight(0xf6f8ff, 0x171014, 1.75));
+    const key = new THREE.DirectionalLight(0xffffff, 3.2);
+    key.position.set(-1.8, 2.6, 3.5);
+    scene.add(key);
+    const rim = new THREE.DirectionalLight(0xe4002b, 2.1);
+    rim.position.set(2.7, -0.7, 1.4);
+    scene.add(rim);
+    const fill = new THREE.DirectionalLight(0x9aa7b8, 1.0);
+    fill.position.set(-2.2, -1.4, 1.4);
+    scene.add(fill);
 
-function animate() {
-  requestAnimationFrame(animate);
-  if (model) {
-    if (!dragging) model.rotation.y += velocity;
-    model.rotation.x += (tiltTarget - model.rotation.x) * 0.06;
-  }
-  renderer.render(scene, camera);
-}
-animate();
+    let logo = null;
+    let spin = 0.55;
+    new GLTFLoader().load('./rt-logo.glb', ({ scene: model }) => {
+      logo = model.getObjectByName('RT_Logo') ?? model;
+      scene.add(model);
+    }, undefined, (error) => {
+      console.error('rt-logo.glb konnte nicht geladen werden.', error);
+    });
 
-/* Kleine Animations-API für eigene Skripte:
-   rtLogo.setSpin(0.02)  – Drehgeschwindigkeit ändern (0 = stoppen)
-   rtLogo.setPose(y, x)  – feste Pose in Radiant (z. B. 0,0 = Frontansicht) */
-window.rtLogo = {
-  get model() { return model; },
-  setSpin(v) { velocity = v; },
-  setPose(y, x = 0.1) { if (model) { model.rotation.y = y; model.rotation.x = x; } tiltTarget = x; velocity = 0; },
-};
+    const clock = new THREE.Clock();
+    function animate() {
+      requestAnimationFrame(animate);
+      if (logo && spin) {
+        logo.rotation.y = Math.sin(clock.getElapsedTime() * spin) * 0.28;
+      }
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
 
-addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
-</script>
+    /* Kleine Animations-API für eigene Skripte */
+    window.rtLogo = {
+      get model() { return logo; },
+      setSway(v) { spin = v; },                // 0 = Pendeln stoppen
+      setPose(y, x = 0) { if (logo) { spin = 0; logo.rotation.set(x, y, 0); } },
+    };
+
+    addEventListener('resize', () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+  </script>
 </body>
 </html>

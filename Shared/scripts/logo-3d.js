@@ -1,10 +1,30 @@
-import * as THREE from 'https://esm.sh/three@0.161.0';
-import { GLTFLoader } from 'https://esm.sh/three@0.161.0/examples/jsm/loaders/GLTFLoader.js';
-
 const hosts = [...document.querySelectorAll('[data-rt-logo-3d]')];
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/* Lite-Mode (Touch/iOS/schwache Hardware): kein WebGL, kein three.js-Download —
+   das SVG-Fallback-Bild bleibt sichtbar. Verhindert GPU-/Speicherdruck, der
+   Safari auf iPhones zum Absturz bringt. */
+const liteMode = document.documentElement.classList.contains('lite-mode')
+    || matchMedia('(hover: none), (pointer: coarse)').matches
+    || (navigator.deviceMemory && navigator.deviceMemory <= 4)
+    || /iPhone|iPad|iPod/.test(navigator.userAgent || '');
+
+let THREE = null;
+let GLTFLoader = null;
+if (hosts.length && !liteMode) {
+    try {
+        THREE = await import('https://esm.sh/three@0.161.0');
+        ({ GLTFLoader } = await import('https://esm.sh/three@0.161.0/examples/jsm/loaders/GLTFLoader.js'));
+    } catch (error) {
+        console.warn('three.js konnte nicht geladen werden — SVG-Fallback bleibt aktiv.', error);
+    }
+}
+
 hosts.forEach((host) => {
+  if (!THREE || !GLTFLoader) {
+    host.classList.add('is-fallback');
+    return;
+  }
   const canvas = host.querySelector('canvas');
   if (!canvas) return;
 

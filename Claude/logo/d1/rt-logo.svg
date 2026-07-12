@@ -1,35 +1,48 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
-  <!-- RT Rail Time GmbH — Logo-Icon Redesign "d1"
-       Rotes R (glänzend), verschränkt mit dunkelgrauem T (matt-metallisch).
-       CI: Signalrot #e4002b · Anthrazit #090c11 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-25 -25 1050 1062" width="2000" height="2000" role="img" aria-labelledby="t d">
+  <title id="t">RailTime RT Logo — Claude D1</title>
+  <desc id="d">RT-Monogramm mit glänzend signalrotem R und matt-metallischem anthrazitfarbenem T, schmale Fuge, transparenter Hintergrund.</desc>
+
   <defs>
-    <linearGradient id="red" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ff1a41"/>
-      <stop offset=".45" stop-color="#e4002b"/>
-      <stop offset="1" stop-color="#b80023"/>
+    <linearGradient id="red-face" x1="0" y1="0" x2="0.7" y2="1">
+      <stop offset="0" stop-color="#ff2144"/>
+      <stop offset="0.45" stop-color="#e4002b"/>
+      <stop offset="1" stop-color="#ba0023"/>
     </linearGradient>
-    <linearGradient id="dark" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#33383f"/>
-      <stop offset=".5" stop-color="#23272d"/>
-      <stop offset="1" stop-color="#15181d"/>
+    <linearGradient id="dark-face" x1="0.1" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#464c55"/>
+      <stop offset="0.5" stop-color="#2b3037"/>
+      <stop offset="1" stop-color="#171b20"/>
     </linearGradient>
   </defs>
 
-  <!-- Dunkles T (liegt optisch hinter dem Rot, wird von dessen Lücken freigestellt) -->
-  <g fill="url(#dark)">
-    <path d="M60,198 H610 V360 H60 Z"/>
-    <path d="M250,360 H420 V735 H250 Z"/>
-  </g>
+  <!--
+    Claude-D1-Geometrie (0..1000):
+    - 16 Einheiten schmale, gleichmäßige Fuge rund um das T (auch oben)
+    - identische Konturen wie rt-logo.glb (build-logo-glb.mjs)
+  -->
+  <g id="RT_Logo">
+    <!-- Schmale sichtbare Tiefe: dunklere, leicht versetzte Rückflächen -->
+    <g transform="translate(0 12)">
+      <path d="M0 0H738L862 152V462L755 583H617L1000 1000H731L446 658V396H650L696 350V216L654 174H0Z" fill="#8f0a1f"/>
+      <path d="M0 396H219V1000H0Z" fill="#8f0a1f"/>
+      <path d="M0 190H680V380H430V1000H235V380H0Z" fill="#0a0d11"/>
+    </g>
 
-  <!-- Rotes R -->
-  <g fill="url(#red)">
-    <!-- Deckbalken links -->
-    <path d="M60,40 H330 V190 H60 Z"/>
-    <!-- Deckbalken rechts + Bogen (Bowl) mit Mittelbalken -->
-    <path d="M400,40 H660 L840,220 V445 L725,555 H455 V415 H705 V310 L610,215 H400 Z"/>
-    <!-- Diagonales Bein -->
-    <path d="M455,555 H620 L835,805 V950 H655 Z"/>
-    <!-- Stamm links mit Stufe (Balkenbreite-Detail) -->
-    <path d="M60,368 H235 V445 H200 V950 H60 Z"/>
+    <!-- T, Anthrazit matt-metallisch -->
+    <path id="T_Dark" d="M0 190H680V380H430V1000H235V380H0Z" fill="url(#dark-face)"/>
+
+    <!-- R, Signalrot glänzend -->
+    <g id="R_Red" fill="url(#red-face)">
+      <path d="M0 0H738L862 152V462L755 583H617L1000 1000H731L446 658V396H650L696 350V216L654 174H0Z"/>
+      <path d="M0 396H219V1000H0Z"/>
+    </g>
+
+    <!-- Dezente Lichtkanten oben (Glanz), ohne Kontur-Rahmen -->
+    <g fill="#ffffff" opacity="0.22">
+      <path d="M0 0H738L862 152L851 161L733 9H0Z"/>
+      <path d="M0 190H680V199H0Z" opacity="0.5"/>
+      <path d="M0 396H219V405H0Z"/>
+    </g>
   </g>
 </svg>
