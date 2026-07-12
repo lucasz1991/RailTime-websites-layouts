@@ -142,7 +142,7 @@ function rt_document_end(bool $home = false): void {
 <script src="<?= rt_project_url('Shared/scripts/scroll-motion.js') ?>?v=6"></script>
 <?php if ($home): ?>
 <script src="<?= htmlspecialchars(rt_layout_asset('assets/motion.js'), ENT_QUOTES, 'UTF-8') ?>?v=5"></script>
-<script src="<?= rt_project_url('Shared/scripts/scroll-video-engine.js') ?>?v=10"></script>
+<script src="<?= rt_project_url('Shared/scripts/scroll-video-engine.js') ?>?v=11"></script>
 <script src="<?= rt_project_url('Shared/scripts/home-intro.js') ?>?v=15"></script>
 <?php else: ?>
 <script src="<?= rt_project_url('Shared/scripts/subpages.js') ?>?v=5"></script>

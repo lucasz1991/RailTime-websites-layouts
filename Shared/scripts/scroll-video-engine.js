@@ -415,6 +415,7 @@
     let targetTimer = 0;
     let watchdogTimer = 0;
     let pendingJump = null;
+    let hardJumpProgress = null;
 
     video.muted = true;
     video.loop = false;
@@ -432,7 +433,17 @@
     const nowTime = () => global.performance?.now?.() ?? Date.now();
     const playhead = () => clipDuration > 0 ? clamp((video.currentTime - clipStartTime) / clipDuration) : 0;
     const mediaTimeAt = progress => clipStartTime + clamp(progress) * clipDuration;
+    const enforceMediaPosition = () => {
+      if (!duration || !clipDuration) return;
+      if (hardJumpProgress !== null) {
+        const desiredTime = hardJumpProgress >= 1 ? Math.max(clipStartTime, duration - .001) : mediaTimeAt(hardJumpProgress);
+        if (Math.abs(video.currentTime - desiredTime) > .002) video.currentTime = desiredTime;
+        return;
+      }
+      if (video.currentTime < clipStartTime - .002) video.currentTime = clipStartTime;
+    };
     const report = () => {
+      enforceMediaPosition();
       const progress = playhead();
       video.dataset.videoProgress = progress.toFixed(4);
       video.dataset.videoPlaybackRate = (video.paused ? 0 : video.playbackRate).toFixed(3);
@@ -450,6 +461,7 @@
       }
     };
     const ensurePlaying = rate => {
+      enforceMediaPosition();
       video.playbackRate = Math.max(minPlaybackRate, Math.min(maxPlaybackRate, rate));
       if (!video.paused || playPending || nativeBlocked) return;
       const generation = ++playGeneration;
@@ -632,6 +644,8 @@
 
     const addDelta = pixels => {
       if (destroyed || completed || completionArmed || !Number.isFinite(pixels) || !pixels) return intentProgress;
+      hardJumpProgress = null;
+      enforceMediaPosition();
       const limited = Math.max(-settings.eventCap, Math.min(settings.eventCap, pixels));
       const nextDirection = Math.sign(limited);
       const current = playhead();
@@ -663,6 +677,8 @@
 
     const setProgress = value => {
       if (destroyed || completed) return intentProgress;
+      hardJumpProgress = null;
+      enforceMediaPosition();
       const next = clamp(value);
       direction = Math.sign(next - playhead()) || direction || 1;
       intentProgress = targetProgress = next;
@@ -685,6 +701,7 @@
       idleTimer = targetTimer = 0;
       stopNative();
       intentProgress = targetProgress = next;
+      hardJumpProgress = next;
       pendingJump = duration ? null : next;
       if (duration) video.currentTime = next >= 1 ? Math.max(clipStartTime, duration - .001) : mediaTimeAt(next);
       video.dataset.videoProgress = next.toFixed(4);
