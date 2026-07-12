@@ -15,7 +15,15 @@ return [
     ],
     'assets' => [
         'logo_horizontal'=>'logo-horizontal.png','logo_dark'=>'logo-darkbg.png','hero_poster'=>'start3-first-frame.png','hero_video'=>'start3.mp4',
-        'service_images'=>['s3.jpg','s2.jpg','1.jpg','s4.jpg','s1.jpg'],'intro_image'=>'stock/AdobeStock_721131368-web.jpg','team_image'=>'s1.jpg','equipment_image'=>'s4.jpg',
+        'service_images'=>['s3.jpg','s2.jpg','1.jpg','s4.jpg','s1.jpg'],
+        'service_images_layout1'=>[
+            'stock/wagenmeister-dienstleistungen-web.jpg',
+            'stock/notfalldienst-24-7-web.jpg',
+            'stock/AdobeStock_721131368-web.jpg',
+            'stock/sonderuntersuchungen-web.jpg',
+            'stock/pufferteller-schmieren.jpg',
+        ],
+        'intro_image'=>'stock/AdobeStock_721131368-web.jpg','team_image'=>'s1.jpg','equipment_image'=>'s4.jpg',
     ],
     'metrics' => [['number'=>'56+','label'=>'Erfahrene Wagenmeister'],['number'=>'24/7','label'=>'Notfalldienst'],['number'=>'DE','label'=>'Bundesweite Einsätze']],
     'process' => ['Einsatzort, Zeitraum und Aufgabenstellung werden aufgenommen.','Qualifikation, Ausrüstung und Verfügbarkeit werden abgestimmt.','Der Auftrag wird sicher und zuverlässig vor Ort bearbeitet.','Ergebnis und weiteres Vorgehen werden transparent kommuniziert.'],

@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const target = document.querySelector('#content-start');
   if (!hero) return;
 
+  const introClipStart = .30;
+  const introSpeedMultiplier = 1.15;
+
   const restoreAnchor = () => {
     if (!location.hash) return;
     const anchor = document.querySelector(location.hash);
@@ -47,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
       removeEventListener('touchmove', onTouchMove);
       removeEventListener('keydown', onKeyDown);
       removeEventListener('railtime:preview-scroll', onPreviewScroll);
+      removeEventListener('railtime:preview-sync', onPreviewSync);
     };
 
     const unlock = () => {
@@ -74,6 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
       scrollDistance: 4200,
       minPlaybackRate: .65,
       maxPlaybackRate: 1,
+      mediaStartProgress: introClipStart,
+      speedMultiplier: introSpeedMultiplier,
       maxLeadSeconds: .55,
       idleGraceMs: 140,
       coastSeconds: .22,
@@ -114,12 +120,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const delta = Number(event.detail?.deltaY || 0);
       if (Number.isFinite(delta) && delta) scrubber.addDelta(delta);
     }
+    function onPreviewSync() {
+      if (finished) return;
+      scrubber.jumpTo(0);
+      renderProgress(0);
+    }
 
     addEventListener('wheel', onWheel, { passive: false });
     addEventListener('touchstart', onTouchStart, { passive: true });
     addEventListener('touchmove', onTouchMove, { passive: false });
     addEventListener('keydown', onKeyDown);
     addEventListener('railtime:preview-scroll', onPreviewScroll);
+    addEventListener('railtime:preview-sync', onPreviewSync);
 
     if (location.hash || matchMedia('(prefers-reduced-motion: reduce)').matches) {
       finished = true;
@@ -215,7 +227,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const player = window.RailTimeScrollVideo.createOneShot(video, {
-      playbackRate: 1.15,
+      playbackRate: introSpeedMultiplier,
+      mediaStartProgress: introClipStart,
       onProgress: progress => {
         hero.style.setProperty('--rt-video-progress', progress.toFixed(4));
         if (progress >= .58) {

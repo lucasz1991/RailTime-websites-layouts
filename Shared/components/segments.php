@@ -31,7 +31,7 @@ function rt_segment_hero(array $rt, int $theme): void {
     <?php rt_video_scroll_cue(); ?>
 </section>
 <?php return; endif; ?>
-<section class="rt-hero"><video <?= rt_video_attrs($rt, !in_array($theme, [1, 3, 5], true)) ?>><source src="<?= rt_video($rt['assets']['hero_video']) ?>" type="video/mp4"></video><div class="rt-intro-logo"><img src="<?= rt_image($rt['assets']['logo_dark']) ?>" alt="RT Rail Time GmbH"></div><div class="rt-hero-copy"><p class="rt-kicker"><?= $theme === 3 ? 'Einsatzakte / Deutschlandweit' : 'RT Rail Time GmbH' ?></p><h1 class="rt-display"><?= $title ?></h1><p class="max-w-2xl text-base md:text-lg leading-relaxed mb-8"><?= $rt['claim'] ?></p><a class="rt-button" href="#leistungen">Leistungen entdecken →</a></div><?php if (in_array($theme, [1, 3, 5], true)) rt_video_scroll_cue(); ?></section>
+<section class="rt-hero"><video <?= rt_video_attrs($rt, !in_array($theme, [1, 3, 5], true)) ?>><source src="<?= rt_video($rt['assets']['hero_video']) ?>" type="video/mp4"></video><div class="rt-intro-logo"><?php rt_logo_lockup('hero'); ?></div><div class="rt-hero-copy"><p class="rt-kicker"><?= $theme === 3 ? 'Einsatzakte / Deutschlandweit' : 'RT Rail Time GmbH' ?></p><h1 class="rt-display"><?= $title ?></h1><p class="max-w-2xl text-base md:text-lg leading-relaxed mb-8"><?= $rt['claim'] ?></p><a class="rt-button" href="#leistungen">Leistungen entdecken →</a></div><?php if (in_array($theme, [1, 3, 5], true)) rt_video_scroll_cue(); ?></section>
 <?php }
 
 function rt_segment_metrics(array $rt): void { ?><section class="rt-metrics" id="content-start"><?php foreach ($rt['metrics'] as $i => $metric): ?><div><small>0<?= $i + 1 ?></small><strong><?= $metric['number'] ?></strong><span><?= $metric['label'] ?></span></div><?php endforeach ?></section><?php }
@@ -39,22 +39,33 @@ function rt_segment_metrics(array $rt): void { ?><section class="rt-metrics" id=
 function rt_segment_intro(array $rt, int $theme = 0): void {
     if ($theme === 1): ?>
 <section class="rt-section rt-intro-section rt-intro-section--noir">
-    <div class="rt-intro-section__media" data-reveal>
-        <img src="<?= rt_image($rt['assets']['intro_image']) ?>" alt="Wagenmeister bei der technischen Prüfung eines Güterwagens" loading="lazy" decoding="async">
-        <span><b>56+</b> erfahrene Wagenmeister</span>
-    </div>
     <div class="rt-intro-section__copy">
+        <div class="rt-intro-section__brand" data-reveal><?php rt_logo_lockup('content'); ?></div>
         <p class="rt-kicker">RT Rail Time GmbH</p>
         <h2 class="rt-title" data-reveal><?= $rt['claim'] ?></h2>
         <p class="rt-lead"><?= $rt['about_copy'] ?></p>
         <a class="rt-text-link" href="ueber-uns.html">Das Unternehmen kennenlernen <span>→</span></a>
+    </div>
+    <div class="rt-intro-section__media" data-reveal>
+        <img src="<?= rt_image($rt['assets']['intro_image']) ?>" alt="Wagenmeister mit Laptop vor einem Containerzug" loading="lazy" decoding="async">
+        <span><b>56+</b> erfahrene Wagenmeister</span>
     </div>
 </section>
 <?php return; endif; ?>
 <section class="rt-section rt-intro-section"><p class="rt-kicker">RT Rail Time GmbH</p><h2 class="rt-title" data-reveal><?= $rt['claim'] ?></h2><p class="rt-lead"><?= $rt['about_copy'] ?></p></section><?php
 }
 
-function rt_segment_services(array $rt): void { ?><section class="rt-section alt" id="leistungen"><p class="rt-kicker">Unsere Leistungen</p><h2 class="rt-title" data-reveal>Fünf Leistungsbereiche für einen sicheren Eisenbahnbetrieb</h2><div class="rt-service-grid"><?php foreach ($rt['services'] as $i => $service): ?><a class="rt-card service" href="leistungen.html#<?= $service['slug'] ?>"><img src="<?= rt_image($rt['assets']['service_images'][$i]) ?>" alt="<?= htmlspecialchars($service['title']) ?>"><div><span>0<?= $i + 1 ?></span><h3><?= $service['title'] ?></h3><b>Mehr erfahren →</b></div></a><?php endforeach ?></div></section><?php }
+function rt_service_images_for_theme(array $rt, int $theme): array {
+    if ($theme === 1 && !empty($rt['assets']['service_images_layout1'])) {
+        return $rt['assets']['service_images_layout1'];
+    }
+    return $rt['assets']['service_images'];
+}
+
+function rt_segment_services(array $rt, int $theme = 0): void {
+    $serviceImages = rt_service_images_for_theme($rt, $theme); ?>
+<section class="rt-section alt" id="leistungen"><p class="rt-kicker">Unsere Leistungen</p><h2 class="rt-title" data-reveal>Fünf Leistungsbereiche für einen sicheren Eisenbahnbetrieb</h2><div class="rt-service-grid"><?php foreach ($rt['services'] as $i => $service): ?><a class="rt-card service" href="leistungen.html#<?= $service['slug'] ?>"><img src="<?= rt_image($serviceImages[$i]) ?>" alt="<?= htmlspecialchars($service['title'], ENT_QUOTES, 'UTF-8') ?>" loading="lazy" decoding="async"><div><span>0<?= $i + 1 ?></span><h3><?= $service['title'] ?></h3><b>Mehr erfahren →</b></div></a><?php endforeach ?></div></section><?php
+}
 
 function rt_segment_process(array $rt): void { ?><section class="rt-section"><p class="rt-kicker">Zusammenarbeit</p><h2 class="rt-title" data-reveal>Von der Anfrage bis zum zuverlässig ausgeführten Einsatz.</h2><div class="rt-process"><?php foreach ($rt['process'] as $i => $step): ?><div><b>0<?= $i + 1 ?></b><p><?= $step ?></p></div><?php endforeach ?></div></section><?php }
 

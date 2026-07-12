@@ -16,9 +16,9 @@ Die verbindlichen Vorgaben stehen in `Layout Rules.csv`; jedes Layout beschreibt
 
 Die öffentliche Vorschau läuft ohne sichtbare AI-Ordnerstruktur über nummerierte Pfade unter `http://localhost/RailTime/layouts/1` bis `http://localhost/RailTime/layouts/7`. Unterseiten folgen demselben Schema, zum Beispiel `http://localhost/RailTime/layouts/3/leistungen`.
 
-Das Startvideo nutzt layoutübergreifend das echte erste Videoframe `Shared/assets/images/start3-first-frame.png`. Dieses Poster ist sofort sichtbar, während das MP4 zunächst nur seine Metadaten lädt.
+Das Startvideo nutzt layoutübergreifend das echte erste Videoframe `Shared/assets/images/start3-first-frame.png` als Ladeposter. Sobald die Metadaten verfügbar sind, setzen die scrollgesteuerten Intros am 30-Prozent-Zeitpunkt des MP4 ein.
 
-Noir Motion, Signal Atlas und Horizon Signature nutzen zentral `Shared/scripts/scroll-video-engine.js`. Ein erster kleiner Abwärtsscroll startet das native MP4 einmalig mit fester Wiedergabegeschwindigkeit. Es gibt keine scrollabhängigen `currentTime`-Sprünge, kein Rückspulen und keinen Einzelbild-Cache. Nach dem Ende verschwindet das Video per Parallax-Übergang und der Hero bleibt dauerhaft als kompakter Schwarz-Rot-Banner mit Logo stehen.
+Noir Motion, Signal Atlas und Horizon Signature nutzen zentral `Shared/scripts/scroll-video-engine.js`. Die ersten 30 Prozent des Startvideos werden übersprungen; der verbleibende Clip wird für Scroll-, Logo- und Hero-Übergänge wieder sauber auf 0 bis 100 Prozent normiert. Scrollfortschritt und native Abspielrate laufen mit dem gemeinsamen Faktor 1,15. Kontrolliertes Rückwärtsscrollen endet an der neuen Startmarke. Nach dem tatsächlichen Videoende verschwindet das Video per Parallax-Übergang und der Hero bleibt dauerhaft als kompakter Schwarz-Rot-Banner mit Logo stehen.
 
 Die Deutschlandkarte steht auf den Startseiten im unteren Standort-/Techniksegment links neben dem Text. In diesem Segment wird kein zusätzliches Foto verwendet.
 

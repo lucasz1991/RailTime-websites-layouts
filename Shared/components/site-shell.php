@@ -34,6 +34,16 @@ function rt_layout_asset(string $file): string {
     return $file;
 }
 
+function rt_logo_lockup(string $variant = 'default'): void {
+    $variant = preg_replace('/[^a-z0-9_-]/i', '', $variant) ?: 'default';
+    ?>
+<div class="rt-brand-lockup rt-brand-lockup--<?= htmlspecialchars($variant, ENT_QUOTES, 'UTF-8') ?>" role="img" aria-label="RT Rail Time GmbH">
+    <img class="rt-brand-lockup__mark" src="<?= rt_project_url('Codex/logo/d1/rt-logo.svg') ?>" alt="" aria-hidden="true">
+    <img class="rt-brand-lockup__wordmark" src="<?= rt_image('logo-txt.png') ?>" alt="" aria-hidden="true">
+</div>
+<?php
+}
+
 function rt_video_poster(array $rt): string {
     return rt_image($rt['assets']['hero_poster']);
 }
@@ -83,7 +93,7 @@ function rt_document_start(string $title, int $theme, bool $home = false): array
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="<?= rt_project_url('Shared/vendor/tailwind.min.css') ?>?v=5">
-<link rel="stylesheet" href="<?= rt_project_url('Shared/styles/design-system.css') ?>?v=5">
+<link rel="stylesheet" href="<?= rt_project_url('Shared/styles/design-system.css') ?>?v=6">
 <link rel="stylesheet" href="<?= rt_project_url('Shared/styles/layout-polish.css') ?>?v=9">
 <?php if ($theme === 1): ?>
 <link rel='preconnect' href='https://esm.sh' crossorigin>
@@ -91,7 +101,8 @@ function rt_document_start(string $title, int $theme, bool $home = false): array
 <link rel='stylesheet' href='<?= rt_project_url('Shared/styles/logo-3d.css') ?>?v=4'>
 <script type='module' src='<?= rt_project_url('Shared/scripts/logo-3d.js') ?>?v=4'></script>
 <?php endif ?>
-<link rel="stylesheet" href="<?= htmlspecialchars(rt_layout_asset('assets/layout.css'), ENT_QUOTES, 'UTF-8') ?>?v=6">
+<link rel="stylesheet" href="<?= htmlspecialchars(rt_layout_asset('assets/layout.css'), ENT_QUOTES, 'UTF-8') ?>?v=7">
+<link rel="stylesheet" href="<?= rt_project_url('Shared/styles/brand-lockup.css') ?>?v=1">
 </head>
 <body class="rt-shell theme-<?= $theme ?><?= $home ? ' is-home' : ' is-subpage' ?> antialiased"<?= $publicAttrs ?>>
 <?php
@@ -102,7 +113,7 @@ function rt_document_start(string $title, int $theme, bool $home = false): array
 function rt_navigation(array $rt, bool $home): void {
     ?>
 <header class="rt-nav<?= $home ? '' : ' is-visible' ?>">
-    <a class="rt-nav__brand" href="index.html"><img src="<?= rt_image($rt['assets']['logo_horizontal']) ?>" alt="RT Rail Time GmbH"></a>
+    <a class="rt-nav__brand" href="index.html" aria-label="Rail Time GmbH – Startseite"><?php rt_logo_lockup('nav'); ?></a>
     <button class="rt-nav__toggle" type="button" aria-label="Menü öffnen" aria-expanded="false"><span></span><span></span></button>
     <nav><?php foreach ($rt['navigation'] as $item): ?><a href="<?= $item['href'] ?>"><?= $item['label'] ?></a><?php endforeach ?></nav>
     <a class="rt-nav__phone" href="tel:<?= $rt['phone_href'] ?>"><span>Notfall 24/7</span><strong><?= $rt['phone'] ?></strong></a>
@@ -114,7 +125,7 @@ function rt_footer(array $rt): void {
     ?>
 <footer class="rt-footer">
     <div class="rt-footer__brand">
-        <img src="<?= rt_image($rt['assets']['logo_dark']) ?>" alt="RT Rail Time">
+        <?php rt_logo_lockup('footer'); ?>
         <p>Ihr verlässlicher Partner im Eisenbahnbetrieb.<br>Sicher. Flexibel. Deutschlandweit im Einsatz.</p>
         <a class="rt-footer__hotline" href="tel:<?= $rt['phone_href'] ?>"><span>Notfalldienst 24/7</span><strong><?= $rt['phone'] ?></strong></a>
     </div>
@@ -131,8 +142,8 @@ function rt_document_end(bool $home = false): void {
 <script src="<?= rt_project_url('Shared/scripts/scroll-motion.js') ?>?v=6"></script>
 <?php if ($home): ?>
 <script src="<?= htmlspecialchars(rt_layout_asset('assets/motion.js'), ENT_QUOTES, 'UTF-8') ?>?v=5"></script>
-<script src="<?= rt_project_url('Shared/scripts/scroll-video-engine.js') ?>?v=9"></script>
-<script src="<?= rt_project_url('Shared/scripts/home-intro.js') ?>?v=14"></script>
+<script src="<?= rt_project_url('Shared/scripts/scroll-video-engine.js') ?>?v=10"></script>
+<script src="<?= rt_project_url('Shared/scripts/home-intro.js') ?>?v=15"></script>
 <?php else: ?>
 <script src="<?= rt_project_url('Shared/scripts/subpages.js') ?>?v=5"></script>
 <script src="<?= htmlspecialchars(rt_layout_asset('assets/motion.js'), ENT_QUOTES, 'UTF-8') ?>?v=5"></script>

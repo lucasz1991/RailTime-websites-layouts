@@ -6,11 +6,14 @@
   function createOneShot(video, options) {
     const settings = Object.assign({
       playbackRate: 1.15,
+      mediaStartProgress: 0,
       fallbackMs: 9000,
       onProgress: null,
       onStateChange: null,
       onComplete: null
     }, options || {});
+
+    const mediaStartProgress = Math.min(.999, clamp(Number(settings.mediaStartProgress) || 0));
 
     let state = 'idle';
     let frameRequest = 0;
@@ -25,6 +28,7 @@
     video.preload = 'metadata';
     video.dataset.scrollVideoEngine = 'shared-one-shot-v3';
     video.dataset.videoState = state;
+    video.dataset.videoStartProgress = mediaStartProgress.toFixed(4);
 
     const setState = nextState => {
       if (state === nextState) return;
@@ -43,10 +47,18 @@
     const reportProgress = mediaTime => {
       const duration = Number.isFinite(video.duration) ? video.duration : 0;
       const current = Number.isFinite(mediaTime) ? mediaTime : video.currentTime;
-      const progress = duration > 0 ? clamp(current / duration) : 0;
+      const mediaProgress = duration > 0 ? clamp(current / duration) : 0;
+      const progress = clamp((mediaProgress - mediaStartProgress) / (1 - mediaStartProgress));
       video.dataset.videoProgress = progress.toFixed(4);
       settings.onProgress?.(progress);
       return progress;
+    };
+
+    const positionAtClipStart = () => {
+      if (!Number.isFinite(video.duration) || video.duration <= 0 || mediaStartProgress <= 0) return;
+      const startTime = video.duration * mediaStartProgress;
+      if (video.currentTime < startTime) video.currentTime = startTime;
+      reportProgress(video.currentTime);
     };
 
     const monitor = (_now, metadata) => {
@@ -95,6 +107,7 @@
     const start = async () => {
       if (destroyed || state !== 'idle') return state === 'playing';
       video.preload = 'auto';
+      positionAtClipStart();
       video.playbackRate = settings.playbackRate;
       video.defaultPlaybackRate = settings.playbackRate;
       setState('playing');
@@ -117,16 +130,19 @@
       cancelMonitor();
       video.removeEventListener('ended', onEnded);
       video.removeEventListener('error', onError);
+      video.removeEventListener('loadedmetadata', onMetadata);
     };
 
     const onEnded = () => complete('ended');
     const onError = () => complete('media-error');
     video.addEventListener('ended', onEnded);
     video.addEventListener('error', onError);
-    video.addEventListener('loadedmetadata', () => {
+    const onMetadata = () => {
       video.dataset.videoDuration = Number(video.duration || 0).toFixed(3);
+      positionAtClipStart();
       if (state === 'playing') armFallback();
-    });
+    };
+    video.addEventListener('loadedmetadata', onMetadata);
 
     reportProgress(0);
     return {
@@ -357,6 +373,8 @@
       scrollDistance: 4200,
       minPlaybackRate: .65,
       maxPlaybackRate: 1,
+      mediaStartProgress: 0,
+      speedMultiplier: 1,
       maxLeadSeconds: .55,
       idleGraceMs: 140,
       coastSeconds: .22,
@@ -367,7 +385,14 @@
       onComplete: null
     }, options || {});
 
+    const mediaStartProgress = Math.min(.999, clamp(Number(settings.mediaStartProgress) || 0));
+    const speedMultiplier = Math.max(.01, Number(settings.speedMultiplier) || 1);
+    const minPlaybackRate = settings.minPlaybackRate * speedMultiplier;
+    const maxPlaybackRate = settings.maxPlaybackRate * speedMultiplier;
+
     let duration = 0;
+    let clipStartTime = 0;
+    let clipDuration = 0;
     let intentProgress = 0;
     let targetProgress = 0;
     let mediaRate = 0;
@@ -399,10 +424,14 @@
     video.pause();
     video.dataset.scrollVideoEngine = 'shared-inertial-native-v3';
     video.dataset.videoState = 'scrubbing';
+    video.dataset.videoProgress = '0.0000';
     video.dataset.videoPlaybackRate = '0.000';
+    video.dataset.videoStartProgress = mediaStartProgress.toFixed(4);
+    video.dataset.videoSpeedMultiplier = speedMultiplier.toFixed(3);
 
     const nowTime = () => global.performance?.now?.() ?? Date.now();
-    const playhead = () => duration > 0 ? clamp(video.currentTime / duration) : 0;
+    const playhead = () => clipDuration > 0 ? clamp((video.currentTime - clipStartTime) / clipDuration) : 0;
+    const mediaTimeAt = progress => clipStartTime + clamp(progress) * clipDuration;
     const report = () => {
       const progress = playhead();
       video.dataset.videoProgress = progress.toFixed(4);
@@ -421,7 +450,7 @@
       }
     };
     const ensurePlaying = rate => {
-      video.playbackRate = Math.max(settings.minPlaybackRate, Math.min(settings.maxPlaybackRate, rate));
+      video.playbackRate = Math.max(minPlaybackRate, Math.min(maxPlaybackRate, rate));
       if (!video.paused || playPending || nativeBlocked) return;
       const generation = ++playGeneration;
       playPending = true;
@@ -454,12 +483,12 @@
       targetTimer = 0;
       if (destroyed || completed || completionArmed || direction <= 0 || !duration) return;
       const current = playhead();
-      const remainingSeconds = Math.max(0, (targetProgress - current) * duration);
+      const remainingSeconds = Math.max(0, (targetProgress - current) * clipDuration);
       if (remainingSeconds > .018) {
         scheduleTargetStop();
         return;
       }
-      const targetTime = Math.max(0, Math.min(duration - .001, targetProgress * duration));
+      const targetTime = Math.max(clipStartTime, Math.min(duration - .001, mediaTimeAt(targetProgress)));
       stopNative();
       mediaRate = 0;
       if (Math.abs(video.currentTime - targetTime) > .025) video.currentTime = targetTime;
@@ -469,21 +498,21 @@
 
     const scheduleTargetStop = () => {
       if (targetTimer || destroyed || completed || completionArmed || direction <= 0 || !duration) return;
-      const remainingSeconds = Math.max(0, (targetProgress - playhead()) * duration);
+      const remainingSeconds = Math.max(0, (targetProgress - playhead()) * clipDuration);
       if (remainingSeconds <= .018) {
         settleAtTarget();
         return;
       }
       // Check at the earliest possible arrival. This prevents background-tab or
       // throttled video-frame callbacks from letting native playback overshoot.
-      const delay = Math.max(24, (remainingSeconds / settings.maxPlaybackRate) * 1000 - 8);
+      const delay = Math.max(24, (remainingSeconds / maxPlaybackRate) * 1000 - 8);
       targetTimer = global.setTimeout(settleAtTarget, delay);
     };
 
     const applyCoast = () => {
       if (destroyed || completed || completionArmed || coastApplied || !direction || !duration) return;
       const current = playhead();
-      targetProgress = clamp(current + direction * settings.coastSeconds / duration);
+      targetProgress = clamp(current + direction * settings.coastSeconds / clipDuration);
       intentProgress = targetProgress;
       coastApplied = true;
       clearTimeout(targetTimer);
@@ -529,7 +558,7 @@
         clearTimeout(finalTimer);
         if (!isAtActualEnd()) {
           completionPending = false;
-          ensurePlaying(settings.maxPlaybackRate);
+          ensurePlaying(maxPlaybackRate);
           requestDraw();
           return;
         }
@@ -551,34 +580,34 @@
       const dt = Math.min(.05, Math.max(.001, (now - lastFrameAt) / 1000));
       lastFrameAt = now;
       let current = playhead();
-      const halfFrame = Math.max(.0015, (1 / 30) / duration);
+      const halfFrame = Math.max(.0015, (1 / 30) / clipDuration);
 
       if (!completionArmed && !coastApplied && now - lastInputAt >= settings.idleGraceMs && direction) applyCoast();
 
       if (completionArmed) targetProgress = 1;
       const gap = targetProgress - current;
       let desiredRate = 0;
-      if (completionArmed) desiredRate = settings.maxPlaybackRate;
+      if (completionArmed) desiredRate = maxPlaybackRate;
       else if (Math.abs(gap) > halfFrame) {
-        const magnitude = Math.min(1, Math.abs(gap) * duration / settings.maxLeadSeconds);
-        desiredRate = Math.sign(gap) * (settings.minPlaybackRate + (settings.maxPlaybackRate - settings.minPlaybackRate) * magnitude);
+        const magnitude = Math.min(1, Math.abs(gap) * clipDuration / settings.maxLeadSeconds);
+        desiredRate = Math.sign(gap) * (minPlaybackRate + (maxPlaybackRate - minPlaybackRate) * magnitude);
       }
 
       const response = 1 - Math.exp(-dt / Math.max(.02, settings.rateSmoothingMs / 1000));
       mediaRate += (desiredRate - mediaRate) * response;
-      mediaRate = Math.max(-settings.maxPlaybackRate, Math.min(settings.maxPlaybackRate, mediaRate));
+      mediaRate = Math.max(-maxPlaybackRate, Math.min(maxPlaybackRate, mediaRate));
 
       if (completionArmed || mediaRate > .04) {
         if (nativeBlocked) {
           stopNative();
           video.currentTime = Math.min(duration - .001, video.currentTime + Math.max(0, mediaRate) * dt);
         } else {
-          ensurePlaying(Math.max(settings.minPlaybackRate, mediaRate));
+          ensurePlaying(Math.max(minPlaybackRate, mediaRate));
           scheduleTargetStop();
         }
       } else if (mediaRate < -.04) {
         stopNative();
-        video.currentTime = Math.max(0, video.currentTime + mediaRate * dt);
+        video.currentTime = Math.max(clipStartTime, video.currentTime + mediaRate * dt);
       } else {
         stopNative();
         mediaRate = 0;
@@ -614,12 +643,12 @@
         intentProgress = nextDirection > 0 ? Math.max(intentProgress, current) : Math.min(intentProgress, current);
       }
       direction = nextDirection;
-      intentProgress = clamp(intentProgress + limited / settings.scrollDistance);
+      intentProgress = clamp(intentProgress + limited / settings.scrollDistance * speedMultiplier);
       if (direction > 0 && intentProgress >= .997) {
         intentProgress = targetProgress = 1;
         completionArmed = true;
       } else {
-        const maxLead = settings.maxLeadSeconds / Math.max(duration || 6, .1);
+        const maxLead = settings.maxLeadSeconds / Math.max(clipDuration || 6, .1);
         targetProgress = clamp(intentProgress);
         targetProgress = direction > 0 ? Math.min(targetProgress, current + maxLead) : Math.max(targetProgress, current - maxLead);
       }
@@ -657,19 +686,26 @@
       stopNative();
       intentProgress = targetProgress = next;
       pendingJump = duration ? null : next;
-      if (duration) video.currentTime = next >= 1 ? Math.max(0, duration - .001) : duration * next;
+      if (duration) video.currentTime = next >= 1 ? Math.max(clipStartTime, duration - .001) : mediaTimeAt(next);
       video.dataset.videoProgress = next.toFixed(4);
       video.dataset.videoState = next >= 1 ? 'complete' : 'scrubbing';
       return next;
     };
 
     const onMetadata = () => {
+      const hadDuration = duration > 0;
       duration = Number.isFinite(video.duration) ? video.duration : 0;
+      clipStartTime = duration * mediaStartProgress;
+      clipDuration = Math.max(0, duration - clipStartTime);
       video.dataset.videoDuration = duration.toFixed(3);
+      video.dataset.videoClipDuration = clipDuration.toFixed(3);
       if (duration && pendingJump !== null) {
-        video.currentTime = pendingJump >= 1 ? Math.max(0, duration - .001) : duration * pendingJump;
+        video.currentTime = pendingJump >= 1 ? Math.max(clipStartTime, duration - .001) : mediaTimeAt(pendingJump);
         pendingJump = null;
+      } else if (duration && !hadDuration) {
+        video.currentTime = mediaTimeAt(intentProgress);
       }
+      report();
       requestDraw();
     };
     const onEnded = () => confirmFinalFrame('ended');
@@ -687,7 +723,7 @@
         return;
       }
       if (!completionArmed && direction > 0 && !video.paused) {
-        const tolerance = Math.max(.0015, (1 / 30) / duration);
+        const tolerance = Math.max(.0015, (1 / 30) / clipDuration);
         if (playhead() >= targetProgress - tolerance) settleAtTarget();
       }
     }, 60);
