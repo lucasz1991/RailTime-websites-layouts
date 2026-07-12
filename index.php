@@ -334,7 +334,7 @@ const fitCardFrames = (scope = document) => {
         if (!compact) {
             const top = 18;
             const bottom = 54;
-            const desktopWidth = Math.max(220, Math.min(width * .68, Math.max(220, height - top - bottom - 28) * 1.49));
+            const desktopWidth = Math.max(220, Math.min(width * .60, Math.max(220, height - top - bottom - 68) * 1.49));
             const desktopHeight = desktopWidth / 1.49;
             const desktopLeft = (width - desktopWidth) / 2;
             const tabletWidth = Math.min(desktopWidth * .32, width * .24);
@@ -636,8 +636,7 @@ if (layoutRail && layoutRail.children.length > 1) {
     requestAnimationFrame(initialPosition);
     window.addEventListener('resize', () => { initialPosition(); fitCardFrames(); }, { passive: true });
 
-    let dragging = false, startX = 0, startPosition = 0, autoTimer = 0, resumeTimer = 0, animating = false;
-    const autoEnabled = matchMedia('(min-width: 761px) and (hover: hover) and (pointer: fine)').matches;
+    let dragging = false, startX = 0, startPosition = 0, animating = false;
     const animateTo = (target, complete) => {
         if (animating) return;
         animating = true;
@@ -675,26 +674,10 @@ if (layoutRail && layoutRail.children.length > 1) {
             });
         }
     };
-    const stopAuto = () => { if (autoTimer) window.clearInterval(autoTimer); autoTimer = 0; };
-    const startAuto = () => {
-        stopAuto();
-        if (!autoEnabled) return;
-        autoTimer = window.setInterval(() => move(1), 7000);
-    };
-    const pauseForReview = () => {
-        stopAuto();
-        window.clearTimeout(resumeTimer);
-        if (autoEnabled) resumeTimer = window.setTimeout(startAuto, 60000);
-    };
-    document.addEventListener('railtime:preview-open', () => {
-        stopAuto();
-        window.clearTimeout(resumeTimer);
-    });
-    document.addEventListener('railtime:preview-close', pauseForReview);
     layoutRail.addEventListener('pointerdown', (event) => {
         if (animating || event.target.closest('a,button,[role="button"]')) return;
         dragging = true; startX = event.clientX; startPosition = position;
-        pauseForReview(); layoutRail.classList.add('is-dragging'); layoutRail.setPointerCapture?.(event.pointerId);
+        layoutRail.classList.add('is-dragging'); layoutRail.setPointerCapture?.(event.pointerId);
     });
     layoutRail.addEventListener('pointermove', (event) => {
         if (!dragging) return;
@@ -710,13 +693,9 @@ if (layoutRail && layoutRail.children.length > 1) {
         if (delta < -s * .18) move(1);
         else if (delta > s * .18) move(-1);
         else animateTo(-s, settleCentered);
-        pauseForReview();
     }));
-    document.querySelector('[data-rail-prev]')?.addEventListener('click', () => { pauseForReview(); move(-1); });
-    document.querySelector('[data-rail-next]')?.addEventListener('click', () => { pauseForReview(); move(1); });
-    document.addEventListener('pointermove', pauseForReview, { passive: true });
-    document.addEventListener('touchstart', pauseForReview, { passive: true });
-    startAuto();
+    document.querySelector('[data-rail-prev]')?.addEventListener('click', () => move(-1));
+    document.querySelector('[data-rail-next]')?.addEventListener('click', () => move(1));
 }
 
 const preview = document.querySelector('[data-live-preview]');
@@ -750,7 +729,7 @@ if (preview) {
         const scale = Math.max(.18, Math.min(
             (availableW - spec.chromeX) / spec.width,
             (availableH - spec.chromeY - spec.extraBottom) / spec.height,
-            .96
+            .84
         ));
         shell.style.width = (spec.width * scale + spec.chromeX) + 'px';
         shell.style.height = (spec.height * scale + spec.chromeY) + 'px';

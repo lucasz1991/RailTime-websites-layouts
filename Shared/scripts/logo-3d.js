@@ -52,6 +52,7 @@ hosts.forEach((host) => {
   let pointerY = 0;
   let rotationX = -.025;
   let rotationY = 0;
+  const noirSignal = host.dataset.logoVariant === 'noir-signal';
   const startedAt = performance.now();
 
   const resize = () => {
@@ -74,12 +75,18 @@ hosts.forEach((host) => {
     frame = 0;
     if (!logo || !inView || document.hidden) return;
     const elapsed = (now - startedAt) / 1000;
-    const targetY = Math.sin(elapsed * .58) * .19 + pointerX * .24;
     const targetX = -.025 + pointerY * .08;
-    rotationY += (targetY - rotationY) * .055;
     rotationX += (targetX - rotationX) * .07;
-    logo.rotation.set(rotationX, rotationY, 0);
-    logo.position.y = Math.sin(elapsed * .9) * .012;
+    if (noirSignal) {
+      rotationY = elapsed * .52;
+      logo.rotation.set(rotationX, rotationY + pointerX * .2, Math.sin(elapsed * .72) * .028);
+      logo.position.y = Math.sin(elapsed * 1.15) * .022;
+    } else {
+      const targetY = Math.sin(elapsed * .58) * .19 + pointerX * .24;
+      rotationY += (targetY - rotationY) * .055;
+      logo.rotation.set(rotationX, rotationY, 0);
+      logo.position.y = Math.sin(elapsed * .9) * .012;
+    }
     renderer.render(scene, camera);
     frame = requestAnimationFrame(tick);
   };

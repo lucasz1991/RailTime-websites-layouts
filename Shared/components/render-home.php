@@ -7,7 +7,7 @@ function rt_home(int $theme): void {
 <main><?php
     rt_segment_hero($rt, $theme);
     rt_segment_metrics($rt);
-    rt_segment_intro($rt);
+    rt_segment_intro($rt, $theme);
     rt_segment_services($rt);
     rt_segment_process($rt);
     rt_segment_team($rt);

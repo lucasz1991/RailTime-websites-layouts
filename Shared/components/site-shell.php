@@ -85,13 +85,13 @@ function rt_document_start(string $title, int $theme, bool $home = false): array
 <link rel="stylesheet" href="<?= rt_project_url('Shared/vendor/tailwind.min.css') ?>?v=5">
 <link rel="stylesheet" href="<?= rt_project_url('Shared/styles/design-system.css') ?>?v=5">
 <link rel="stylesheet" href="<?= rt_project_url('Shared/styles/layout-polish.css') ?>?v=9">
-<link rel="stylesheet" href="<?= htmlspecialchars(rt_layout_asset('assets/layout.css'), ENT_QUOTES, 'UTF-8') ?>?v=5">
 <?php if ($theme === 1): ?>
 <link rel='preconnect' href='https://esm.sh' crossorigin>
 <link rel='preload' href='<?= rt_project_url('Codex/logo/d1/rt-logo.glb') ?>' as='fetch' type='model/gltf-binary' crossorigin>
-<link rel='stylesheet' href='<?= rt_project_url('Shared/styles/logo-3d.css') ?>?v=1'>
-<script type='module' src='<?= rt_project_url('Shared/scripts/logo-3d.js') ?>?v=1'></script>
+<link rel='stylesheet' href='<?= rt_project_url('Shared/styles/logo-3d.css') ?>?v=2'>
+<script type='module' src='<?= rt_project_url('Shared/scripts/logo-3d.js') ?>?v=2'></script>
 <?php endif ?>
+<link rel="stylesheet" href="<?= htmlspecialchars(rt_layout_asset('assets/layout.css'), ENT_QUOTES, 'UTF-8') ?>?v=6">
 </head>
 <body class="rt-shell theme-<?= $theme ?><?= $home ? ' is-home' : ' is-subpage' ?> antialiased"<?= $publicAttrs ?>>
 <?php
