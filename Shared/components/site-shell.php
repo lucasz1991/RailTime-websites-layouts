@@ -88,8 +88,8 @@ function rt_document_start(string $title, int $theme, bool $home = false): array
 <?php if ($theme === 1): ?>
 <link rel='preconnect' href='https://esm.sh' crossorigin>
 <link rel='preload' href='<?= rt_project_url('Codex/logo/d1/rt-logo.glb') ?>' as='fetch' type='model/gltf-binary' crossorigin>
-<link rel='stylesheet' href='<?= rt_project_url('Shared/styles/logo-3d.css') ?>?v=2'>
-<script type='module' src='<?= rt_project_url('Shared/scripts/logo-3d.js') ?>?v=2'></script>
+<link rel='stylesheet' href='<?= rt_project_url('Shared/styles/logo-3d.css') ?>?v=4'>
+<script type='module' src='<?= rt_project_url('Shared/scripts/logo-3d.js') ?>?v=4'></script>
 <?php endif ?>
 <link rel="stylesheet" href="<?= htmlspecialchars(rt_layout_asset('assets/layout.css'), ENT_QUOTES, 'UTF-8') ?>?v=6">
 </head>

@@ -54,6 +54,7 @@ hosts.forEach((host) => {
   let rotationY = 0;
   const noirSignal = host.dataset.logoVariant === 'noir-signal';
   const startedAt = performance.now();
+  let destroyed = false;
 
   const resize = () => {
     const rect = host.getBoundingClientRect();
@@ -73,7 +74,7 @@ hosts.forEach((host) => {
 
   const tick = (now) => {
     frame = 0;
-    if (!logo || !inView || document.hidden) return;
+    if (destroyed || !logo || !inView || document.hidden) return;
     const elapsed = (now - startedAt) / 1000;
     const targetX = -.025 + pointerY * .08;
     rotationX += (targetX - rotationX) * .07;
@@ -92,7 +93,7 @@ hosts.forEach((host) => {
   };
 
   const start = () => {
-    if (!logo || frame || !inView || document.hidden) return;
+    if (destroyed || !logo || frame || !inView || document.hidden) return;
     if (reducedMotion) {
       logo.rotation.set(-.025, .08, 0);
       renderer.render(scene, camera);
@@ -131,6 +132,14 @@ hosts.forEach((host) => {
 
   const modelUrl = host.dataset.modelSrc || new URL('../../Codex/logo/d1/rt-logo.glb', import.meta.url).href;
   new GLTFLoader().load(modelUrl, ({ scene: model }) => {
+    if (destroyed) {
+      model.traverse((object) => {
+        object.geometry?.dispose?.();
+        const materials = Array.isArray(object.material) ? object.material : [object.material];
+        materials.filter(Boolean).forEach((material) => material.dispose?.());
+      });
+      return;
+    }
     logo = model.getObjectByName('RT_Logo') ?? model;
     scene.add(model);
     host.classList.add('is-ready');
@@ -141,11 +150,21 @@ hosts.forEach((host) => {
     console.warn('Das 3D-Logo konnte nicht geladen werden.', error);
   });
 
-  addEventListener('pagehide', () => {
+  const destroy = () => {
+    if (destroyed) return;
+    destroyed = true;
     stop();
     resizeObserver.disconnect();
     visibilityObserver.disconnect();
     document.removeEventListener('visibilitychange', onVisibilityChange);
+    document.removeEventListener('railtime:overview-intro-dispose', onOverviewIntroDispose);
+    removeEventListener('pagehide', destroy);
     renderer.dispose();
-  }, { once: true });
+    renderer.forceContextLoss?.();
+  };
+  const onOverviewIntroDispose = () => {
+    if (host.closest('.intro-screen')) destroy();
+  };
+  document.addEventListener('railtime:overview-intro-dispose', onOverviewIntroDispose);
+  addEventListener('pagehide', destroy, { once: true });
 });

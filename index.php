@@ -115,8 +115,8 @@ $baseUrl = rt_project_base_url();
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel='preconnect' href='https://esm.sh' crossorigin>
 <link rel='preload' href='<?= rt_project_url('Codex/logo/d1/rt-logo.glb') ?>' as='fetch' type='model/gltf-binary' crossorigin>
-<link rel='stylesheet' href='<?= rt_project_url('Shared/styles/logo-3d.css') ?>?v=1'>
-<script type='module' src='<?= rt_project_url('Shared/scripts/logo-3d.js') ?>?v=1'></script>
+<link rel='stylesheet' href='<?= rt_project_url('Shared/styles/logo-3d.css') ?>?v=4'>
+<script type='module' src='<?= rt_project_url('Shared/scripts/logo-3d.js') ?>?v=4'></script>
 <style>
 :root{--red:#e4002b;--ink:#0b0e13;--panel:#111820;--line:rgba(255,255,255,.12)}
 *{box-sizing:border-box}
@@ -406,16 +406,34 @@ const preparePreviewFrame = (frame) => {
     }
     hideInternalScrollbars();
 };
-const cardPreviewFrames = (card) => [...card.querySelectorAll('.iframe-device__viewport')]
-    .map((viewport) => viewport.querySelector('iframe') || viewport._railtimePreviewFrame)
-    .filter(Boolean);
+document.querySelectorAll('.iframe-device__viewport').forEach((viewport) => {
+    const frame = viewport.querySelector('iframe');
+    if (!frame) return;
+    viewport.dataset.previewSrc = frame.dataset.src || '';
+    viewport.dataset.previewTitle = frame.title || '';
+});
+const cardPreviewFrames = (card) => [...card.querySelectorAll('.iframe-device__viewport iframe')];
+const constrainedPreviewMode = matchMedia('(max-width: 760px), (hover: none), (pointer: coarse)').matches;
 const hydrateCard = (card) => {
     if (!card) return;
     card.querySelectorAll('.iframe-device__viewport').forEach((viewport) => {
-        let frame = viewport.querySelector('iframe') || viewport._railtimePreviewFrame;
-        if (!frame) return;
-        if (!frame.isConnected) viewport.append(frame);
-        viewport._railtimePreviewFrame = frame;
+        const mobileViewport = viewport.closest('.iframe-device--mobile');
+        if (constrainedPreviewMode && !mobileViewport) {
+            const frame = viewport.querySelector('iframe');
+            if (frame?.isConnected) {
+                frame.src = 'about:blank';
+                frame.remove();
+            }
+            return;
+        }
+        let frame = viewport.querySelector('iframe');
+        if (!frame) {
+            frame = document.createElement('iframe');
+            frame.loading = 'lazy';
+            frame.dataset.src = viewport.dataset.previewSrc || card.dataset.previewUrl || ('layouts/' + card.dataset.layoutId);
+            frame.title = viewport.dataset.previewTitle || ('Layout ' + card.dataset.layoutId + ' Vorschau');
+            viewport.append(frame);
+        }
         preparePreviewFrame(frame);
         if (!frame.hasAttribute('src')) {
             frame.src = frame.dataset.src || card.dataset.previewUrl || ('layouts/' + card.dataset.layoutId);
@@ -430,10 +448,10 @@ const unloadCard = (card) => {
     card.querySelectorAll('.iframe-device__viewport').forEach((viewport) => {
         const frame = viewport.querySelector('iframe');
         if (!frame) return;
-        viewport._railtimePreviewFrame = frame;
+        viewport.dataset.previewSrc = frame.dataset.src || viewport.dataset.previewSrc || '';
+        viewport.dataset.previewTitle = frame.title || viewport.dataset.previewTitle || '';
         frame.src = 'about:blank';
         frame.remove();
-        frame.removeAttribute('src');
     });
 };
 const previewScrollStates = new WeakMap();
@@ -518,9 +536,11 @@ const bindCardPageNavigation = (card) => {
         card.dataset.previewUrl = url;
         previewScrollStates.delete(card);
         delete card.dataset.contentCenter;
-        cardPreviewFrames(card).forEach((frame) => {
-            frame.dataset.src = url;
-            if (frame.isConnected) {
+        card.querySelectorAll('.iframe-device__viewport').forEach((viewport) => {
+            viewport.dataset.previewSrc = url;
+            const frame = viewport.querySelector('iframe');
+            if (frame) {
+                frame.dataset.src = url;
                 frame.src = url;
                 preparePreviewFrame(frame);
             }
@@ -560,8 +580,12 @@ document.querySelectorAll('.card').forEach((card) => {
 });
 window.addEventListener('resize', () => fitCardFrames(), { passive: true });
 window.setTimeout(() => {
-    document.querySelector('.intro-screen')?.classList.add('is-leaving');
+    const intro = document.querySelector('.intro-screen');
+    intro?.classList.add('is-leaving');
     document.body.classList.remove('intro-active');
+    document.dispatchEvent(new CustomEvent('railtime:overview-intro-dispose'));
+    document.dispatchEvent(new CustomEvent('railtime:overview-ready'));
+    window.setTimeout(() => intro?.remove(), 1400);
 }, 5200);
 const layoutRail = document.querySelector('[data-layout-rail]');
 if (layoutRail && layoutRail.children.length > 1) {
@@ -591,6 +615,7 @@ if (layoutRail && layoutRail.children.length > 1) {
         try { sessionStorage.setItem(sessionKey, id); } catch (_) {}
     };
     let activePreviewCard = null;
+    let previewsReady = !constrainedPreviewMode;
     const updateFocus = () => {
         const railRect = layoutRail.getBoundingClientRect();
         const center = railRect.left + railRect.width / 2;
@@ -616,9 +641,19 @@ if (layoutRail && layoutRail.children.length > 1) {
                 if (item !== closest) unloadCard(item);
             });
             activePreviewCard = closest;
-            hydrateCard(activePreviewCard);
+            if (previewsReady) hydrateCard(activePreviewCard);
         }
     };
+    document.addEventListener('railtime:overview-ready', () => {
+        previewsReady = true;
+        hydrateCard(activePreviewCard);
+    }, { once: true });
+    document.addEventListener('railtime:preview-open', () => {
+        if (constrainedPreviewMode) unloadCard(activePreviewCard);
+    });
+    document.addEventListener('railtime:preview-close', () => {
+        if (constrainedPreviewMode && previewsReady) hydrateCard(activePreviewCard);
+    });
     const renderPosition = () => {
         if (layoutRail.scrollLeft) layoutRail.scrollLeft = 0;
         track.style.transform = 'translate3d(' + position + 'px,0,0)';
