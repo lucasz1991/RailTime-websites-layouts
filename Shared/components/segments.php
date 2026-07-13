@@ -48,7 +48,7 @@ function rt_segment_intro(array $rt, int $theme = 0): void {
     </div>
     <div class="rt-intro-section__media" data-reveal>
         <img src="<?= rt_image($rt['assets']['intro_image']) ?>" alt="Wagenmeister mit Laptop vor einem Containerzug" loading="lazy" decoding="async">
-        <span><b>56+</b> erfahrene Wagenmeister</span>
+        <span><b>60+</b> erfahrene Wagenmeister</span>
     </div>
 </section>
 <?php return; endif; ?>
@@ -69,7 +69,7 @@ function rt_segment_services(array $rt, int $theme = 0): void {
 
 function rt_segment_process(array $rt): void { ?><section class="rt-section"><p class="rt-kicker">Zusammenarbeit</p><h2 class="rt-title" data-reveal>Von der Anfrage bis zum zuverlässig ausgeführten Einsatz.</h2><div class="rt-process"><?php foreach ($rt['process'] as $i => $step): ?><div><b>0<?= $i + 1 ?></b><p><?= $step ?></p></div><?php endforeach ?></div></section><?php }
 
-function rt_segment_team(array $rt): void { ?><section class="rt-split"><img src="<?= rt_image($rt['assets']['team_image']) ?>" alt="Rail Time im Einsatz"><div class="bg-gray-900 text-white"><p class="rt-kicker">Unser Team</p><h2 class="rt-title" data-reveal>56+ qualifizierte Wagenmeister – bundesweit verfügbar</h2><p class="leading-relaxed text-gray-300">Unsere Mitarbeiter werden regelmäßig fortgebildet und vereinen Qualifikationen aus Wagenprüfung, Bahnbetrieb, Qualitätsmanagement, Gefahrgut und Schadwagenmanagement.</p></div></section><?php }
+function rt_segment_team(array $rt): void { ?><section class="rt-split"><img src="<?= rt_image($rt['assets']['team_image']) ?>" alt="Rail Time im Einsatz"><div class="bg-gray-900 text-white"><p class="rt-kicker">Unser Team</p><h2 class="rt-title" data-reveal>60+ qualifizierte Wagenmeister – bundesweit verfügbar</h2><p class="leading-relaxed text-gray-300">Unsere Mitarbeiter werden regelmäßig fortgebildet und vereinen Qualifikationen aus Wagenprüfung, Bahnbetrieb, Qualitätsmanagement, Gefahrgut und Schadwagenmanagement.</p></div></section><?php }
 
 function rt_segment_map_technology(array $rt, int $theme): void {
     if ($theme === 1): ?><section class="rt-map-tech rt-map-tech--noir"><div class="rt-map-tech__map"><?php include __DIR__ . '/../modules/germany-map.php'; ?></div><div class="rt-map-tech__copy"><p class="rt-kicker">Ausrüstung &amp; Technik</p><h2 class="rt-title" data-reveal>Für sichere und effiziente Einsätze vorbereitet</h2><ul class="rt-equipment-list"><?php foreach (array_filter(array_map('trim', explode('·', $rt['equipment']))) as $item): ?><li><?= htmlspecialchars($item, ENT_QUOTES, 'UTF-8') ?></li><?php endforeach ?></ul></div></section><?php

@@ -69,7 +69,7 @@
     </figure>
     <div class="ed-split__text" data-ed-reveal>
         <p class="ed-label">Unser Team</p>
-        <h2 class="ed-h2 serif">56+ qualifizierte Wagenmeister — <em>bundesweit</em> verfügbar</h2>
+        <h2 class="ed-h2 serif">60+ qualifizierte Wagenmeister — <em>bundesweit</em> verfügbar</h2>
         <p>Unsere Mitarbeiter werden regelmäßig fortgebildet und vereinen Qualifikationen aus Wagenprüfung, Bahnbetrieb, Qualitätsmanagement, Gefahrgut und Schadwagenmanagement.</p>
     </div>
 </section>

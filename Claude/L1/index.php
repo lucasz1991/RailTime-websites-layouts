@@ -75,7 +75,7 @@
     <figure data-cl-reveal><img src="<?= cl_image($rt['assets']['team_image']) ?>" alt="Rail Time im Einsatz"></figure>
     <div class="cl-split__panel" data-cl-reveal>
         <p class="cl-label cl-label--light">Unser Team</p>
-        <h2 class="cl-h2">56+ qualifizierte Wagenmeister – bundesweit verfügbar</h2>
+        <h2 class="cl-h2">60+ qualifizierte Wagenmeister – bundesweit verfügbar</h2>
         <p>Unsere Mitarbeiter werden regelmäßig fortgebildet und vereinen Qualifikationen aus Wagenprüfung, Bahnbetrieb, Qualitätsmanagement, Gefahrgut und Schadwagenmanagement.</p>
     </div>
 </section>

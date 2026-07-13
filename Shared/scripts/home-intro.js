@@ -16,6 +16,92 @@ document.addEventListener('DOMContentLoaded', () => {
     anchor?.scrollIntoView({ block: 'start' });
   };
 
+  if (video?.dataset.heroPlayback === 'intro-once') {
+    let completed = false;
+    let retryArmed = false;
+    const blockedKeys = ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', ' ', 'Home', 'End'];
+    const startButton = hero.querySelector('[data-intro-start]');
+
+    video.muted = true;
+    video.defaultMuted = true;
+    video.loop = false;
+    video.autoplay = true;
+    video.playsInline = true;
+    video.preload = 'auto';
+    video.removeAttribute('loop');
+
+    scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    hero.classList.add('is-video-intro-playing');
+    document.documentElement.classList.add('rt-intro-playing');
+    document.body.classList.add('rt-intro-playing');
+
+    const preventTraversal = event => {
+      if (event.cancelable) event.preventDefault();
+    };
+    const preventTraversalKey = event => {
+      if (blockedKeys.includes(event.key) && event.cancelable) event.preventDefault();
+    };
+    const lockPage = () => {
+      addEventListener('wheel', preventTraversal, { passive: false });
+      addEventListener('touchmove', preventTraversal, { passive: false });
+      addEventListener('keydown', preventTraversalKey);
+    };
+    const unlockPage = () => {
+      document.documentElement.classList.remove('rt-intro-playing');
+      document.body.classList.remove('rt-intro-playing');
+      removeEventListener('wheel', preventTraversal);
+      removeEventListener('touchmove', preventTraversal);
+      removeEventListener('keydown', preventTraversalKey);
+    };
+    lockPage();
+
+    const revealAtVideoEnd = () => {
+      if (completed) return;
+      completed = true;
+      hero.classList.remove('is-video-intro-playing', 'is-video-autoplay-blocked');
+      hero.classList.add('is-video-intro-complete', 'is-video-logo-visible');
+      logo?.classList.add('is-visible');
+      nav?.classList.add('is-visible');
+      unlockPage();
+      dispatchEvent(new Event('resize'));
+      if (location.hash) setTimeout(restoreAnchor, 1000);
+    };
+
+    const playIntroVideo = () => {
+      const attempt = video.play();
+      if (!attempt?.catch) return;
+      attempt.then(() => {
+        hero.classList.remove('is-video-autoplay-blocked');
+      }).catch(() => {
+        hero.classList.add('is-video-autoplay-blocked');
+        if (retryArmed) return;
+        retryArmed = true;
+        addEventListener('pointerdown', playIntroVideo, { once: true, passive: true });
+        addEventListener('keydown', playIntroVideo, { once: true });
+      });
+    };
+
+    startButton?.addEventListener('click', playIntroVideo);
+
+    video.addEventListener('ended', revealAtVideoEnd, { once: true });
+    video.addEventListener('error', revealAtVideoEnd, { once: true });
+
+    if (video.ended) revealAtVideoEnd();
+    else if (video.readyState >= 2) playIntroVideo();
+    else video.addEventListener('canplay', playIntroVideo, { once: true });
+
+    const resumeIntroVideo = () => {
+      if (!completed && !document.hidden && video.paused) playIntroVideo();
+    };
+    document.addEventListener('visibilitychange', resumeIntroVideo);
+    addEventListener('pagehide', () => {
+      document.removeEventListener('visibilitychange', resumeIntroVideo);
+      startButton?.removeEventListener('click', playIntroVideo);
+      unlockPage();
+    }, { once: true });
+    return;
+  }
+
   const usesInertialScrollVideo = ['theme-1', 'theme-3', 'theme-5'].some(theme => document.body.classList.contains(theme));
 
   if (usesInertialScrollVideo && video && window.RailTimeScrollVideo?.createScrollScrub) {

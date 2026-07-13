@@ -3,7 +3,7 @@ return [
     'company' => 'RT Rail Time GmbH',
     'claim' => 'Ihr verlässlicher Partner für professionelle Wagenmeister-Dienstleistungen im Eisenbahngüterverkehr – sicher, flexibel, bundesweit und bei Bedarf rund um die Uhr.',
     'about_title' => 'Kompetent, flexibel und bundesweit im Einsatz',
-    'about_copy' => 'Die RT Rail Time GmbH verbindet fachliche Kompetenz mit hoher Einsatzbereitschaft. Mehr als 56 erfahrene Wagenmeister unterstützen Kunden im Eisenbahngüterverkehr flexibel, präzise und bundesweit.',
+    'about_copy' => 'Die RT Rail Time GmbH verbindet fachliche Kompetenz mit hoher Einsatzbereitschaft. 60+ erfahrene Wagenmeister unterstützen Kunden im Eisenbahngüterverkehr flexibel, präzise und bundesweit.',
     'emergency_title' => 'Kurzfristiger Einsatz erforderlich?',
     'emergency_copy' => 'Bei dringenden technischen Unregelmäßigkeiten erreichen Sie unseren Wagenmeister-Notfalldienst rund um die Uhr unter 0160 1881848.',
     'phone' => '0160 1881848', 'phone_href' => '01601881848', 'email' => 'kontakt@rail-time.de',
@@ -25,7 +25,7 @@ return [
         ],
         'intro_image'=>'stock/AdobeStock_721131368-web.jpg','team_image'=>'s1.jpg','equipment_image'=>'s4.jpg',
     ],
-    'metrics' => [['number'=>'56+','label'=>'Erfahrene Wagenmeister'],['number'=>'24/7','label'=>'Notfalldienst'],['number'=>'DE','label'=>'Bundesweite Einsätze']],
+    'metrics' => [['number'=>'60+','label'=>'Erfahrene Wagenmeister'],['number'=>'24/7','label'=>'Notfalldienst'],['number'=>'DE','label'=>'Bundesweite Einsätze']],
     'process' => ['Einsatzort, Zeitraum und Aufgabenstellung werden aufgenommen.','Qualifikation, Ausrüstung und Verfügbarkeit werden abgestimmt.','Der Auftrag wird sicher und zuverlässig vor Ort bearbeitet.','Ergebnis und weiteres Vorgehen werden transparent kommuniziert.'],
     'equipment' => 'PSA · Mobiltelefon & GSM-R · Laptop & mobiler Drucker · Pufferfett · Gefahrgut-Placards · Spanngurte · Messgeräte · Panzertape · Luftbremskopf · Flex',
     'services' => [

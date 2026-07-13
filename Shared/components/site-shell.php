@@ -34,11 +34,12 @@ function rt_layout_asset(string $file): string {
     return $file;
 }
 
-function rt_logo_lockup(string $variant = 'default'): void {
+function rt_logo_lockup(string $variant = 'default', string $design = 'd1'): void {
     $variant = preg_replace('/[^a-z0-9_-]/i', '', $variant) ?: 'default';
+    $design = in_array($design, ['d1', 'd2'], true) ? $design : 'd1';
     ?>
 <div class="rt-brand-lockup rt-brand-lockup--<?= htmlspecialchars($variant, ENT_QUOTES, 'UTF-8') ?>" role="img" aria-label="RT Rail Time GmbH">
-    <img class="rt-brand-lockup__mark" src="<?= rt_project_url('Codex/logo/d1/rt-logo.svg') ?>" alt="" aria-hidden="true">
+    <img class="rt-brand-lockup__mark" src="<?= rt_project_url('Codex/logo/' . $design . '/rt-logo.svg') ?>" alt="" aria-hidden="true">
     <img class="rt-brand-lockup__wordmark" src="<?= rt_image('logo-txt.png') ?>" alt="" aria-hidden="true">
 </div>
 <?php
@@ -48,18 +49,22 @@ function rt_video_poster(array $rt): string {
     return rt_image($rt['assets']['hero_poster']);
 }
 
-function rt_video_attrs(array $rt, bool $autoplay = true): string {
+function rt_video_attrs(array $rt, bool $autoplay = true, bool $loop = false, string $preload = 'metadata'): string {
     $poster = rt_video_poster($rt);
+    $preload = in_array($preload, ['none', 'metadata', 'auto'], true) ? $preload : 'metadata';
     $attrs = [
         'muted',
         'playsinline',
-        'preload="metadata"',
+        'preload="' . $preload . '"',
         'poster="' . $poster . '"',
         'data-hero-video',
         'data-hero-poster="' . $poster . '"',
     ];
     if ($autoplay) {
         $attrs[] = 'autoplay';
+    }
+    if ($loop) {
+        $attrs[] = 'loop';
     }
     return implode(' ', $attrs);
 }
@@ -75,6 +80,7 @@ function rt_video_scroll_cue(): void {
 
 function rt_document_start(string $title, int $theme, bool $home = false): array {
     $rt = rt_shared_content();
+    $rt['_layout_theme'] = $theme;
     $publicAttrs = '';
     if (isset($_SERVER['RT_PUBLIC_LAYOUT_ID'], $_SERVER['RT_PUBLIC_LAYOUT_BASE'])) {
         $publicAttrs = ' data-public-layout="' . htmlspecialchars((string)$_SERVER['RT_PUBLIC_LAYOUT_ID'], ENT_QUOTES, 'UTF-8') . '"';
@@ -95,13 +101,15 @@ function rt_document_start(string $title, int $theme, bool $home = false): array
 <link rel="stylesheet" href="<?= rt_project_url('Shared/vendor/tailwind.min.css') ?>?v=5">
 <link rel="stylesheet" href="<?= rt_project_url('Shared/styles/design-system.css') ?>?v=6">
 <link rel="stylesheet" href="<?= rt_project_url('Shared/styles/layout-polish.css') ?>?v=9">
-<?php if ($theme === 1): ?>
+<?php if ($theme === 1 || ($theme === 3 && $home)):
+    $logoModel = $theme === 3 ? 'd2' : 'd1';
+?>
 <link rel='preconnect' href='https://esm.sh' crossorigin>
-<link rel='preload' href='<?= rt_project_url('Codex/logo/d1/rt-logo.glb') ?>' as='fetch' type='model/gltf-binary' crossorigin>
-<link rel='stylesheet' href='<?= rt_project_url('Shared/styles/logo-3d.css') ?>?v=4'>
-<script type='module' src='<?= rt_project_url('Shared/scripts/logo-3d.js') ?>?v=4'></script>
+<link rel='preload' href='<?= rt_project_url('Codex/logo/' . $logoModel . '/rt-logo.glb') ?>' as='fetch' type='model/gltf-binary' crossorigin>
+<link rel='stylesheet' href='<?= rt_project_url('Shared/styles/logo-3d.css') ?>?v=5'>
+<script type='module' src='<?= rt_project_url('Shared/scripts/logo-3d.js') ?>?v=6'></script>
 <?php endif ?>
-<link rel="stylesheet" href="<?= htmlspecialchars(rt_layout_asset('assets/layout.css'), ENT_QUOTES, 'UTF-8') ?>?v=7">
+<link rel="stylesheet" href="<?= htmlspecialchars(rt_layout_asset('assets/layout.css'), ENT_QUOTES, 'UTF-8') ?>?v=9">
 <link rel="stylesheet" href="<?= rt_project_url('Shared/styles/brand-lockup.css') ?>?v=2">
 <link rel="stylesheet" href="<?= rt_project_url('Shared/styles/mobile-navigation.css') ?>?v=3">
 </head>
@@ -114,7 +122,7 @@ function rt_document_start(string $title, int $theme, bool $home = false): array
 function rt_navigation(array $rt, bool $home): void {
     ?>
 <header class="rt-nav<?= $home ? '' : ' is-visible' ?>">
-    <a class="rt-nav__brand" href="index.html" aria-label="Rail Time GmbH – Startseite"><?php rt_logo_lockup('nav'); ?></a>
+    <a class="rt-nav__brand" href="index.html" aria-label="Rail Time GmbH – Startseite"><?php rt_logo_lockup('nav', (int)($rt['_layout_theme'] ?? 0) === 3 ? 'd2' : 'd1'); ?></a>
     <button class="rt-nav__toggle" type="button" aria-label="Menü öffnen" aria-expanded="false"><span></span><span></span></button>
     <nav><?php foreach ($rt['navigation'] as $item): ?><a href="<?= $item['href'] ?>"><?= $item['label'] ?></a><?php endforeach ?></nav>
     <a class="rt-nav__phone" href="tel:<?= $rt['phone_href'] ?>"><span>Notfall 24/7</span><strong><?= $rt['phone'] ?></strong></a>
@@ -126,7 +134,7 @@ function rt_footer(array $rt): void {
     ?>
 <footer class="rt-footer">
     <div class="rt-footer__brand">
-        <?php rt_logo_lockup('footer'); ?>
+        <?php rt_logo_lockup('footer', (int)($rt['_layout_theme'] ?? 0) === 3 ? 'd2' : 'd1'); ?>
         <p>Ihr verlässlicher Partner im Eisenbahnbetrieb.<br>Sicher. Flexibel. Deutschlandweit im Einsatz.</p>
         <a class="rt-footer__hotline" href="tel:<?= $rt['phone_href'] ?>"><span>Notfalldienst 24/7</span><strong><?= $rt['phone'] ?></strong></a>
     </div>
@@ -145,7 +153,7 @@ function rt_document_end(bool $home = false): void {
 <?php if ($home): ?>
 <script src="<?= htmlspecialchars(rt_layout_asset('assets/motion.js'), ENT_QUOTES, 'UTF-8') ?>?v=5"></script>
 <script src="<?= rt_project_url('Shared/scripts/scroll-video-engine.js') ?>?v=11"></script>
-<script src="<?= rt_project_url('Shared/scripts/home-intro.js') ?>?v=15"></script>
+<script src="<?= rt_project_url('Shared/scripts/home-intro.js') ?>?v=17"></script>
 <?php else: ?>
 <script src="<?= rt_project_url('Shared/scripts/subpages.js') ?>?v=5"></script>
 <script src="<?= htmlspecialchars(rt_layout_asset('assets/motion.js'), ENT_QUOTES, 'UTF-8') ?>?v=5"></script>

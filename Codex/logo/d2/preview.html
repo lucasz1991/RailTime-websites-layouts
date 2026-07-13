@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RailTime D2 – 3D-Vorschau</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 48% 38%, rgba(77, 86, 100, .46), transparent 35%),
+        radial-gradient(circle at 50% 110%, rgba(228, 0, 43, .14), transparent 34%),
+        linear-gradient(145deg, #151a22, #07090d 72%);
+    }
+
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, .025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .025) 1px, transparent 1px);
+      background-size: 42px 42px;
+      content: "";
+      pointer-events: none;
+      mask-image: radial-gradient(circle at center, #000 12%, transparent 72%);
+    }
+
+    canvas {
+      position: relative;
+      z-index: 1;
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      cursor: grab;
+    }
+
+    canvas:active { cursor: grabbing; }
+
+    .toolbar,
+    .caption {
+      position: fixed;
+      z-index: 2;
+    }
+
+    .toolbar {
+      top: 20px;
+      left: 50%;
+      display: flex;
+      gap: 5px;
+      padding: 5px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 999px;
+      background: rgba(8, 11, 16, .72);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, .28);
+      backdrop-filter: blur(14px);
+      transform: translateX(-50%);
+    }
+
+    .toolbar button {
+      min-width: 70px;
+      padding: 8px 12px;
+      border: 0;
+      border-radius: 999px;
+      color: #aeb5bf;
+      background: transparent;
+      font: inherit;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .toolbar button:hover,
+    .toolbar button:focus-visible {
+      color: #fff;
+      outline: none;
+      background: rgba(255, 255, 255, .08);
+    }
+
+    .toolbar button[aria-pressed="true"] {
+      color: #fff;
+      background: #e4002b;
+    }
+
+    .caption {
+      left: 22px;
+      bottom: 18px;
+      color: #f4f2ed;
+      letter-spacing: .035em;
+      pointer-events: none;
+    }
+
+    .caption strong,
+    .caption span {
+      display: block;
+    }
+
+    .caption strong {
+      margin-bottom: 6px;
+      font-size: 14px;
+      text-transform: uppercase;
+    }
+
+    .caption span {
+      color: #aeb4bd;
+      font-size: 12px;
+    }
+
+    .status {
+      position: fixed;
+      right: 18px;
+      bottom: 17px;
+      z-index: 2;
+      padding: 8px 11px;
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 999px;
+      color: #c6cbd3;
+      background: rgba(8, 11, 16, .58);
+      font-size: 11px;
+      letter-spacing: .03em;
+      backdrop-filter: blur(12px);
+    }
+
+    .status::before {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin-right: 7px;
+      border-radius: 50%;
+      background: #f1b620;
+      content: "";
+      vertical-align: 1px;
+    }
+
+    .status[data-ready="true"]::before {
+      background: #43d17a;
+      box-shadow: 0 0 10px rgba(67, 209, 122, .65);
+    }
+
+    .status[data-error="true"]::before { background: #ff4b65; }
+
+    @media (max-width: 620px) {
+      .toolbar {
+        top: 12px;
+        width: calc(100% - 24px);
+        justify-content: center;
+      }
+
+      .toolbar button {
+        min-width: 0;
+        flex: 1;
+        padding-inline: 8px;
+      }
+
+      .status {
+        right: auto;
+        bottom: 60px;
+        left: 18px;
+      }
+    }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <nav class="toolbar" aria-label="Kameraansicht">
+    <button type="button" data-view="perspective" aria-pressed="true">3/4</button>
+    <button type="button" data-view="front" aria-pressed="false">Frontal</button>
+    <button type="button" data-view="side" aria-pressed="false">Seite</button>
+    <button type="button" data-view="top" aria-pressed="false">Oben</button>
+  </nav>
+
+  <div class="caption">
+    <strong>RailTime RT · D2</strong>
+    <span>Umlaufende Fasen · Ziehen zum Drehen · Mausrad zum Zoomen</span>
+  </div>
+  <div class="status" role="status">3D-Modell wird geladen …</div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(35, innerWidth / innerHeight, 0.01, 100);
+    const cameraViews = {
+      perspective: new THREE.Vector3(1.35, .48, 2.3),
+      front: new THREE.Vector3(0, .04, 2.62),
+      side: new THREE.Vector3(2.62, .04, .08),
+      top: new THREE.Vector3(.18, 2.46, .78),
+    };
+    camera.position.copy(cameraViews.perspective);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.18;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    document.body.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.enablePan = false;
+    controls.minDistance = 1.15;
+    controls.maxDistance = 4;
+    controls.target.set(0, 0, 0);
+
+    scene.add(new THREE.HemisphereLight(0xf7f9ff, 0x151017, 1.65));
+
+    const key = new THREE.DirectionalLight(0xffffff, 3.6);
+    key.position.set(-1.7, 2.8, 3.4);
+    key.castShadow = true;
+    key.shadow.mapSize.set(2048, 2048);
+    key.shadow.camera.left = -1.4;
+    key.shadow.camera.right = 1.4;
+    key.shadow.camera.top = 1.4;
+    key.shadow.camera.bottom = -1.4;
+    scene.add(key);
+
+    const rim = new THREE.DirectionalLight(0xff2448, 2.4);
+    rim.position.set(2.8, .3, 1.5);
+    scene.add(rim);
+
+    const fill = new THREE.DirectionalLight(0x8fb5ff, 1.15);
+    fill.position.set(-2.5, -1.4, .4);
+    scene.add(fill);
+
+    const floor = new THREE.Mesh(
+      new THREE.PlaneGeometry(5, 5),
+      new THREE.ShadowMaterial({ color: 0x000000, opacity: .32 }),
+    );
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.y = -.57;
+    floor.receiveShadow = true;
+    scene.add(floor);
+
+    const status = document.querySelector('.status');
+    const viewButtons = [...document.querySelectorAll('[data-view]')];
+    let cameraGoal = null;
+
+    function activateView(viewName) {
+      cameraGoal = cameraViews[viewName].clone();
+      viewButtons.forEach((button) => {
+        button.setAttribute('aria-pressed', String(button.dataset.view === viewName));
+      });
+    }
+
+    viewButtons.forEach((button) => {
+      button.addEventListener('click', () => activateView(button.dataset.view));
+    });
+
+    controls.addEventListener('start', () => {
+      cameraGoal = null;
+      viewButtons.forEach((button) => button.setAttribute('aria-pressed', 'false'));
+    });
+
+    const loader = new GLTFLoader();
+    loader.load('./rt-logo.glb', ({ scene: model }) => {
+      model.traverse((object) => {
+        if (!object.isMesh) return;
+        object.castShadow = true;
+        object.receiveShadow = true;
+
+        const outline = new THREE.LineSegments(
+          new THREE.EdgesGeometry(object.geometry, 24),
+          new THREE.LineBasicMaterial({
+            color: 0xffffff,
+            transparent: true,
+            opacity: .13,
+            depthWrite: false,
+          }),
+        );
+        outline.name = 'Bevel_Edge_Preview';
+        outline.scale.setScalar(1.0008);
+        object.add(outline);
+      });
+
+      scene.add(model);
+      status.textContent = 'GLB geladen · Fasen aktiv';
+      status.dataset.ready = 'true';
+    }, undefined, (error) => {
+      status.textContent = 'GLB konnte nicht geladen werden';
+      status.dataset.error = 'true';
+      console.error('rt-logo.glb konnte nicht geladen werden.', error);
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      if (cameraGoal) {
+        camera.position.lerp(cameraGoal, .11);
+        if (camera.position.distanceTo(cameraGoal) < .002) {
+          camera.position.copy(cameraGoal);
+          cameraGoal = null;
+        }
+      }
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    addEventListener('resize', () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+  </script>
+</body>
+</html>
+

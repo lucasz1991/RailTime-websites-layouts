@@ -72,8 +72,11 @@ hosts.forEach((host) => {
   let pointerY = 0;
   let rotationX = -.025;
   let rotationY = 0;
-  const noirSignal = host.dataset.logoVariant === 'noir-signal';
+  const fullSpin = ['noir-signal', 'full-spin'].includes(host.dataset.logoVariant);
+  const arc260 = host.dataset.logoVariant === 'arc-260';
+  const waitForReveal = host.hasAttribute('data-logo-wait-for-reveal');
   const startedAt = performance.now();
+  let animationStartedAt = null;
   let destroyed = false;
 
   const resize = () => {
@@ -95,13 +98,26 @@ hosts.forEach((host) => {
   const tick = (now) => {
     frame = 0;
     if (destroyed || !logo || !inView || document.hidden) return;
-    const elapsed = (now - startedAt) / 1000;
+    const revealReady = !waitForReveal || host.closest('.rt-hero')?.classList.contains('is-video-intro-complete');
+    if (!revealReady) {
+      logo.rotation.set(-.025, 0, 0);
+      logo.position.y = 0;
+      renderer.render(scene, camera);
+      frame = requestAnimationFrame(tick);
+      return;
+    }
+    if (animationStartedAt === null) animationStartedAt = now;
+    const elapsed = (now - (animationStartedAt ?? startedAt)) / 1000;
     const targetX = -.025 + pointerY * .08;
     rotationX += (targetX - rotationX) * .07;
-    if (noirSignal) {
+    if (fullSpin) {
       rotationY = elapsed * .52;
       logo.rotation.set(rotationX, rotationY + pointerX * .2, Math.sin(elapsed * .72) * .028);
       logo.position.y = Math.sin(elapsed * 1.15) * .022;
+    } else if (arc260) {
+      rotationY = Math.sin(elapsed * .55) * THREE.MathUtils.degToRad(130);
+      logo.rotation.set(rotationX, rotationY, 0);
+      logo.position.y = Math.sin(elapsed * .9) * .012;
     } else {
       const targetY = Math.sin(elapsed * .58) * .19 + pointerX * .24;
       rotationY += (targetY - rotationY) * .055;

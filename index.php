@@ -545,14 +545,24 @@ const bindCardPreviewScroll = (card) => {
         const frames = [...card.querySelectorAll('.iframe-preview iframe')].filter((frame) => frame.src && frame.src !== 'about:blank');
         if (!frames.length) return;
         const previewDelta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? innerHeight : 1);
-        const introWindows = frames.map((frame) => {
+        const introStates = frames.map((frame) => {
             try {
                 const win = frame.contentWindow;
                 const doc = frame.contentDocument;
                 const video = doc.querySelector('[data-hero-video]');
-                return doc.body.classList.contains('rt-intro-playing') && video?.dataset.scrollVideoEngine === 'shared-inertial-native-v3' ? win : null;
+                return {
+                    win,
+                    locked: doc.body.classList.contains('rt-intro-playing'),
+                    introOnce: video?.dataset.heroPlayback === 'intro-once',
+                    scrollVideo: video?.dataset.scrollVideoEngine === 'shared-inertial-native-v3'
+                };
             } catch (_) { return null; }
         }).filter(Boolean);
+        if (introStates.some((state) => state.locked && state.introOnce)) {
+            event.preventDefault();
+            return;
+        }
+        const introWindows = introStates.filter((state) => state.locked && state.scrollVideo).map((state) => state.win);
         if (introWindows.length) {
             introWindows.forEach((win) => win.dispatchEvent(new win.CustomEvent('railtime:preview-scroll', { detail: { deltaY: previewDelta } })));
             event.preventDefault();

@@ -16,9 +16,9 @@ Die verbindlichen Vorgaben stehen in `Layout Rules.csv`; jedes Layout beschreibt
 
 Die öffentliche Vorschau läuft ohne sichtbare AI-Ordnerstruktur über nummerierte Pfade unter `http://localhost/RailTime/layouts/1` bis `http://localhost/RailTime/layouts/7`. Unterseiten folgen demselben Schema, zum Beispiel `http://localhost/RailTime/layouts/3/leistungen`.
 
-Das Startvideo nutzt layoutübergreifend das echte erste Videoframe `Shared/assets/images/start3-first-frame.png` als Ladeposter. Sobald die Metadaten verfügbar sind, setzen die scrollgesteuerten Intros am 30-Prozent-Zeitpunkt des MP4 ein.
+Das Startvideo nutzt layoutübergreifend das echte erste Videoframe `Shared/assets/images/start3-first-frame.png` als Ladeposter. Signal Atlas startet es direkt und stumm, sperrt das Seiten-Scrollen bis zum tatsächlichen Videoende und blendet erst danach D2-3D-Logo, Navigation und Hero-Overlays ein.
 
-Noir Motion, Signal Atlas und Horizon Signature nutzen zentral `Shared/scripts/scroll-video-engine.js`. Die ersten 30 Prozent des Startvideos werden übersprungen; der verbleibende Clip wird für Scroll-, Logo- und Hero-Übergänge wieder sauber auf 0 bis 100 Prozent normiert. Scrollfortschritt und native Abspielrate laufen mit dem gemeinsamen Faktor 1,15. Kontrolliertes Rückwärtsscrollen endet an der neuen Startmarke. Nach dem tatsächlichen Videoende verschwindet das Video per Parallax-Übergang und der Hero bleibt dauerhaft als kompakter Schwarz-Rot-Banner mit Logo stehen.
+Noir Motion und Horizon Signature nutzen zentral `Shared/scripts/scroll-video-engine.js`. Die ersten 30 Prozent des Startvideos werden übersprungen; der verbleibende Clip wird für Scroll-, Logo- und Hero-Übergänge wieder sauber auf 0 bis 100 Prozent normiert. Signal Atlas ist davon bewusst entkoppelt; nach seinem einmaligen Startvideo bewegt sich ausschließlich die große D2-3D-Bildmarke im Hero dauerhaft über einen weichen 260-Grad-Bogen.
 
 Die Deutschlandkarte steht auf den Startseiten im unteren Standort-/Techniksegment links neben dem Text. In diesem Segment wird kein zusätzliches Foto verwendet.
 
