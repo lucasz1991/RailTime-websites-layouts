@@ -111,13 +111,9 @@ $baseUrl = rt_project_base_url();
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RailTime Layout-Entwuerfe</title>
 <script>
-/* Lite-Mode für Touch-/Mobilgeräte und schwache Hardware (iOS-Stabilität):
-   deaktiviert GPU-lastige Intro-Effekte und das WebGL-Logo. */
+/* Bewusste Notfalloption: ?lite=1 deaktiviert GPU-lastige Intro-Effekte. */
 (function () {
-    var n = navigator;
-    var lite = matchMedia('(hover: none), (pointer: coarse)').matches
-        || (n.deviceMemory && n.deviceMemory <= 4)
-        || /iPhone|iPad|iPod/.test(n.userAgent || '');
+    var lite = new URLSearchParams(location.search).get('lite') === '1';
     if (lite) document.documentElement.classList.add('lite-mode');
 })();
 </script>
@@ -125,9 +121,12 @@ $baseUrl = rt_project_base_url();
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel='preconnect' href='https://esm.sh' crossorigin>
-<link rel='preload' href='<?= rt_project_url('Codex/logo/d1/rt-logo.glb') ?>' as='fetch' type='model/gltf-binary' crossorigin>
-<link rel='stylesheet' href='<?= rt_project_url('Shared/styles/logo-3d.css') ?>?v=4'>
-<script type='module' src='<?= rt_project_url('Shared/scripts/logo-3d.js') ?>?v=4'></script>
+<link rel='icon' type='image/svg+xml' href='<?= rt_project_url('Shared/assets/icons/favicon.svg') ?>?v=1'>
+<link rel='icon' type='image/png' sizes='32x32' href='<?= rt_project_url('Shared/assets/icons/favicon-32x32.png') ?>?v=1'>
+<link rel='apple-touch-icon' sizes='180x180' href='<?= rt_project_url('Shared/assets/icons/apple-touch-icon.png') ?>?v=1'>
+<link rel='preload' href='<?= rt_project_url('Codex/logo/d2/rt-logo.glb') ?>' as='fetch' type='model/gltf-binary' crossorigin>
+<link rel='stylesheet' href='<?= rt_project_url('Shared/styles/logo-3d.css') ?>?v=5'>
+<script type='module' src='<?= rt_project_url('Shared/scripts/logo-3d.js') ?>?v=9'></script>
 <style>
 :root{--red:#e4002b;--ink:#0b0e13;--panel:#111820;--line:rgba(255,255,255,.12)}
 *{box-sizing:border-box}
@@ -249,9 +248,9 @@ html.lite-mode .iframe-preview__refresh,html.lite-mode .iframe-preview__nav,html
         <div class="intro-screen__meta" aria-hidden="true"><span>Konzept</span><span>Bewegung</span><span>Präzision</span></div>
         <p class="intro-screen__hint">Die Übersicht wird geöffnet</p>
         <div class='intro-screen__brand rt-logo-lockup'>
-            <div class='rt-logo-3d' data-rt-logo-3d data-model-src='<?= rt_project_url('Codex/logo/d1/rt-logo.glb') ?>' role='img' aria-label='Dreidimensionales RT-Logo'>
+            <div class='rt-logo-3d' data-rt-logo-3d data-model-src='<?= rt_project_url('Codex/logo/d2/rt-logo.glb') ?>' role='img' aria-label='Dreidimensionales RT-Logo'>
                 <canvas aria-hidden='true'></canvas>
-                <img class='rt-logo-3d__fallback' src='<?= rt_project_url('Codex/logo/d1/rt-logo.svg') ?>' alt='' aria-hidden='true'>
+                <img class='rt-logo-3d__fallback' src='<?= rt_project_url('Codex/logo/d2/rt-logo.svg') ?>' alt='' aria-hidden='true'>
             </div>
             <img class='rt-logo-wordmark' src='<?= rt_project_url('Shared/assets/images/logo-txt.png') ?>' alt='Rail Time GmbH'>
         </div>

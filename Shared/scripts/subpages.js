@@ -33,22 +33,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
   animated.forEach((element, index) => {
     element.classList.add('rt-scroll-bound');
+    element.parentElement?.classList.add('rt-motion-clip');
     const fromTop = index % 2 === 0;
     const distance = element.matches('[data-service-tile]') ? 54 : 72;
     const nearBottom = element.getBoundingClientRect().top + scrollY > document.documentElement.scrollHeight - innerHeight * 1.15;
+    const draw = rawProgress => {
+      const progress = Math.min(1, Math.max(0, rawProgress));
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const offset = (1 - eased) * distance * (fromTop ? 1 : -1);
+      element.style.setProperty('--rt-scroll-y', `${offset}px`);
+      element.style.setProperty('--rt-scroll-opacity', String(0.18 + eased * 0.82));
+      element.style.setProperty('--rt-scroll-scale', String(0.985 + eased * 0.015));
+    };
+    draw(0);
+
     const scene = new ScrollMagic.Scene({
       triggerElement: element,
       triggerHook: nearBottom ? 0.96 : 0.84,
       duration: nearBottom ? '28%' : '46%'
     }).addTo(controller);
 
-    scene.on('progress', event => {
-      const progress = Math.min(1, Math.max(0, event.progress));
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const offset = (1 - eased) * distance * (fromTop ? 1 : -1);
-      element.style.setProperty('--rt-scroll-y', `${offset}px`);
-      element.style.setProperty('--rt-scroll-opacity', String(0.18 + eased * 0.82));
-      element.style.setProperty('--rt-scroll-scale', String(0.985 + eased * 0.015));
-    });
+    scene.on('progress', event => draw(event.progress));
+    requestAnimationFrame(() => scene.update(true));
   });
 });

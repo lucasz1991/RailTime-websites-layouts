@@ -1,13 +1,10 @@
 const hosts = [...document.querySelectorAll('[data-rt-logo-3d]')];
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* Lite-Mode (Touch/iOS/schwache Hardware): kein WebGL, kein three.js-Download —
-   das SVG-Fallback-Bild bleibt sichtbar. Verhindert GPU-/Speicherdruck, der
-   Safari auf iPhones zum Absturz bringt. */
-const liteMode = document.documentElement.classList.contains('lite-mode')
-    || matchMedia('(hover: none), (pointer: coarse)').matches
-    || (navigator.deviceMemory && navigator.deviceMemory <= 4)
-    || /iPhone|iPad|iPod/.test(navigator.userAgent || '');
+/* Lite-Mode ist nur noch eine bewusste Notfalloption. Touch-Geräte versuchen
+   WebGL mit reduzierter Pixeldichte und fallen bei Fehlern sauber auf SVG zurück. */
+const liteMode = document.documentElement.classList.contains('lite-mode');
+const touchLike = matchMedia('(hover: none), (pointer: coarse)').matches;
 
 let THREE = null;
 let GLTFLoader = null;
@@ -34,7 +31,7 @@ hosts.forEach((host) => {
       canvas,
       antialias: true,
       alpha: true,
-      powerPreference: 'high-performance'
+      powerPreference: touchLike ? 'default' : 'high-performance'
     });
   } catch (error) {
     host.classList.add('is-fallback');
@@ -42,7 +39,7 @@ hosts.forEach((host) => {
     return;
   }
 
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.8));
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, touchLike ? 1.35 : 1.8));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.18;
@@ -95,6 +92,14 @@ hosts.forEach((host) => {
     cancelAnimationFrame(frame);
     frame = 0;
   };
+
+  const onContextLost = (event) => {
+    event.preventDefault();
+    host.classList.remove('is-ready');
+    host.classList.add('is-fallback');
+    stop();
+  };
+  canvas.addEventListener('webglcontextlost', onContextLost, false);
 
   const tick = (now) => {
     frame = 0;
@@ -176,6 +181,7 @@ hosts.forEach((host) => {
     }
     logo = model.getObjectByName('RT_Logo') ?? model;
     scene.add(model);
+    host.classList.remove('is-fallback');
     host.classList.add('is-ready');
     resize();
     start();
@@ -190,6 +196,7 @@ hosts.forEach((host) => {
     stop();
     resizeObserver.disconnect();
     visibilityObserver.disconnect();
+    canvas.removeEventListener('webglcontextlost', onContextLost, false);
     document.removeEventListener('visibilitychange', onVisibilityChange);
     document.removeEventListener('railtime:overview-intro-dispose', onOverviewIntroDispose);
     removeEventListener('pagehide', destroy);

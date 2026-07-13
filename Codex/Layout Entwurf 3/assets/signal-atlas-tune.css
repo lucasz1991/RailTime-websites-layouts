@@ -47,15 +47,15 @@
 .theme-3 .sa-hero--intro .rt-intro-logo {
   z-index: 4;
   opacity: 0;
-  transform: scale(.8);
-  transition: opacity .18s ease-out, transform .38s cubic-bezier(.16, 1, .3, 1);
+  transform: scale(.64);
+  transition: opacity .46s ease-out, transform .72s cubic-bezier(.16, 1, .3, 1);
   pointer-events: none;
 }
 
 .theme-3 .sa-hero--intro.is-video-logo-visible .rt-intro-logo {
   opacity: 1;
   transform: scale(1);
-  transition: opacity .18s ease-out, transform .38s cubic-bezier(.16, 1, .3, 1);
+  transition: opacity .46s ease-out, transform .72s cubic-bezier(.16, 1, .3, 1);
 }
 
 .theme-3 .sa-hero__brand {
@@ -76,6 +76,7 @@
   width: clamp(250px, 29vw, 410px);
   aspect-ratio: 1;
   place-items: center;
+  isolation: isolate;
   transition: width 1.1s cubic-bezier(.16, 1, .3, 1);
 }
 
@@ -83,25 +84,107 @@
   width: clamp(170px, 18vw, 220px);
 }
 
-.theme-3 .sa-logo-stage .sa-orbit {
-  z-index: -1;
-  top: 50%;
-  left: 50%;
-  width: 100%;
-  border-color: rgba(228, 0, 43, .3);
-  background: radial-gradient(circle, rgba(228, 0, 43, .16), rgba(0, 0, 0, .13) 58%, transparent 59%);
-  box-shadow: 0 0 100px rgba(228, 0, 43, .18);
-  transform: translate(-50%, -50%);
+.theme-3 .sa-logo-stage::before,
+.theme-3 .sa-logo-stage::after {
+  position: absolute;
+  z-index: -2;
+  border-radius: 50%;
+  content: "";
 }
 
-.theme-3 .sa-logo-stage .sa-orbit::after {
-  display: none;
+.theme-3 .sa-logo-stage::before {
+  inset: 20%;
+  background: rgba(228, 0, 43, .22);
+  box-shadow: 0 0 90px 34px rgba(228, 0, 43, .18);
+  animation: saLogoCore 2.8s ease-in-out infinite;
+}
+
+.theme-3 .sa-logo-stage::after {
+  inset: 7%;
+  border: 1px solid rgba(255, 255, 255, .1);
+  background: repeating-conic-gradient(from 0deg, rgba(255, 255, 255, .24) 0 1deg, transparent 1deg 18deg);
+  -webkit-mask: radial-gradient(circle, transparent 67%, #000 68% 70%, transparent 71%);
+  mask: radial-gradient(circle, transparent 67%, #000 68% 70%, transparent 71%);
+  animation: saLogoDial 18s linear infinite;
+}
+
+.theme-3 .sa-logo-stage .rt-logo-orbit {
+  position: absolute;
+  z-index: 1;
+  border: 1px solid rgba(255, 255, 255, .2);
+  border-radius: 50%;
+  transform: rotateX(68deg) rotateZ(10deg);
+}
+
+.theme-3 .sa-logo-stage .rt-logo-orbit::before {
+  position: absolute;
+  top: 50%;
+  left: -5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 18px 5px rgba(228, 0, 43, .8);
+  content: "";
+}
+
+.theme-3 .sa-logo-stage .rt-logo-orbit--outer {
+  inset: 8%;
+  animation: saLogoOrbit 7s linear infinite;
+}
+
+.theme-3 .sa-logo-stage .rt-logo-orbit--inner {
+  inset: 19%;
+  border-color: rgba(228, 0, 43, .55);
+  transform: rotateX(72deg) rotateZ(-28deg);
+  animation: saLogoOrbitReverse 5.5s linear infinite;
+}
+
+.theme-3 .sa-logo-stage .rt-logo-scan {
+  position: absolute;
+  z-index: 5;
+  top: 14%;
+  bottom: 14%;
+  left: 14%;
+  width: 1px;
+  pointer-events: none;
+  background: linear-gradient(transparent, #fff 34%, #e4002b 50%, #fff 66%, transparent);
+  box-shadow: 0 0 25px 5px rgba(228, 0, 43, .42);
+  opacity: .7;
+  animation: saLogoScan 3.8s cubic-bezier(.65, 0, .35, 1) infinite;
 }
 
 .theme-3 .sa-logo-stage .sa-logo-3d {
+  z-index: 3;
   width: 68%;
   pointer-events: auto;
   filter: drop-shadow(0 26px 42px rgba(0, 0, 0, .68));
+}
+
+.theme-3 .sa-logo-stage .sa-logo-3d::before {
+  opacity: .62;
+}
+
+@keyframes saLogoCore {
+  50% { opacity: .65; transform: scale(1.18); }
+}
+
+@keyframes saLogoDial {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes saLogoOrbit {
+  to { transform: rotateX(68deg) rotateZ(370deg); }
+}
+
+@keyframes saLogoOrbitReverse {
+  to { transform: rotateX(72deg) rotateZ(-388deg); }
+}
+
+@keyframes saLogoScan {
+  0%, 100% { left: 14%; opacity: 0; transform: scaleY(.65); }
+  15%, 85% { opacity: .75; }
+  50% { left: 86%; opacity: 1; transform: scaleY(1); }
 }
 
 .theme-3 .sa-hero .rt-intro-logo .rt-logo-3d__fallback {
@@ -229,5 +312,12 @@
   .theme-3 .sa-hero--intro .sa-hero__shade,
   .theme-3 .sa-hero--intro .sa-hero__status {
     transition: none;
+  }
+
+  .theme-3 .sa-logo-stage::before,
+  .theme-3 .sa-logo-stage::after,
+  .theme-3 .sa-logo-stage .rt-logo-orbit,
+  .theme-3 .sa-logo-stage .rt-logo-scan {
+    animation: none;
   }
 }

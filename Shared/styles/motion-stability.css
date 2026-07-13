@@ -1,0 +1,119 @@
+/*
+ * x-cloak-style gate for scroll-driven content.
+ * The head marks the page as pending before the first paint. Motion scripts set
+ * these exact start values synchronously and then release the gate in one frame.
+ */
+.rt-motion-clip {
+  overflow: hidden !important;
+}
+
+html.rt-motion-pending body.is-home [class*="-motion-"],
+html.rt-motion-pending body.is-home [data-reveal],
+html.rt-motion-pending body.is-home .rt-process > div,
+html.rt-motion-pending body.is-home .rt-germany-module,
+html.rt-motion-pending body.is-home .rt-card,
+html.rt-motion-pending body.is-home .rt-split > img,
+html.rt-motion-pending body.is-home .rt-split > div,
+html.rt-motion-pending body.is-home .rt-map-tech > *,
+html.rt-motion-pending body.is-subpage main > section,
+html.rt-motion-pending body.is-subpage [data-service-tile],
+html.rt-motion-pending body.is-subpage [data-accordion-item],
+html.rt-motion-pending body.is-subpage form,
+html.rt-motion-pending body.is-subpage .rt-emergency {
+  visibility: hidden !important;
+}
+
+html.rt-motion-enabled .theme-1 [data-reveal],
+html.rt-motion-enabled .theme-1 .rt-process > div,
+html.rt-motion-enabled .theme-1 .rt-germany-module {
+  opacity: .12;
+  transform: translate3d(0, 42px, 0);
+}
+
+html.rt-motion-enabled .theme-1 .rt-card,
+html.rt-motion-enabled .theme-1 .rt-split > img,
+html.rt-motion-enabled .theme-1 .rt-split > div {
+  opacity: .12;
+  transform: translate3d(34px, 0, 0);
+}
+
+html.rt-motion-enabled .theme-2 .sc-motion-rise {
+  opacity: .12;
+  transform: translate3d(0, 62px, 0);
+}
+
+html.rt-motion-enabled .theme-2 .sc-motion-left {
+  opacity: .12;
+  transform: translate3d(-64px, 0, 0);
+}
+
+html.rt-motion-enabled .theme-2 .sc-motion-right {
+  opacity: .12;
+  transform: translate3d(64px, 0, 0);
+}
+
+html.rt-motion-enabled .theme-3 .sa-motion-up {
+  opacity: .12;
+  transform: translate3d(0, 34px, 0);
+}
+
+html.rt-motion-enabled .theme-3 .sa-motion-left {
+  opacity: .12;
+  transform: translate3d(-42px, 0, 0);
+}
+
+html.rt-motion-enabled .theme-3 .sa-motion-right {
+  opacity: .12;
+  transform: translate3d(42px, 0, 0);
+}
+
+html.rt-motion-enabled .theme-3 .ig-motion-up {
+  opacity: .12;
+  transform: translate3d(0, 58px, 0);
+}
+
+html.rt-motion-enabled .theme-3 .ig-motion-left {
+  opacity: .12;
+  transform: translate3d(-62px, 0, 0);
+}
+
+html.rt-motion-enabled .theme-3 .ig-motion-right {
+  opacity: .12;
+  transform: translate3d(62px, 0, 0);
+}
+
+html.rt-motion-enabled .theme-4 [data-reveal],
+html.rt-motion-enabled .theme-4 .rt-process > div {
+  opacity: .12;
+  transform: translate3d(0, 30px, 0);
+}
+
+html.rt-motion-enabled .theme-4 .rt-card,
+html.rt-motion-enabled .theme-4 .rt-split > img,
+html.rt-motion-enabled .theme-4 .rt-split > div {
+  opacity: .12;
+  transform: translate3d(32px, 0, 0);
+}
+
+html.rt-motion-enabled .theme-5 [data-reveal],
+html.rt-motion-enabled .theme-5 .rt-process > div,
+html.rt-motion-enabled .theme-5 .rt-map-tech > * {
+  opacity: .12;
+  transform: translate3d(0, 30px, 0);
+}
+
+html.rt-motion-enabled .theme-5 .rt-card {
+  opacity: .12;
+  transform: translate3d(28px, 0, 0);
+}
+
+html.rt-motion-enabled body.is-home [class*="-motion-"],
+html.rt-motion-enabled body.is-home [data-reveal],
+html.rt-motion-enabled body.is-home .rt-process > div,
+html.rt-motion-enabled body.is-home .rt-germany-module,
+html.rt-motion-enabled body.is-home .rt-card,
+html.rt-motion-enabled body.is-home .rt-split > img,
+html.rt-motion-enabled body.is-home .rt-split > div,
+html.rt-motion-enabled body.is-home .rt-map-tech > * {
+  will-change: transform, opacity;
+}
