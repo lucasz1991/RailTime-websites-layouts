@@ -278,8 +278,18 @@
 
 .theme-3 .sa-emergency figure,
 .theme-3 .ig-emergency figure {
+  position: relative;
   min-height: 270px;
   max-height: none;
+}
+
+.theme-3 .sa-emergency figure img,
+.theme-3 .ig-emergency figure img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .theme-3 .sa-emergency > div,

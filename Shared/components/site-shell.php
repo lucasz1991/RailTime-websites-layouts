@@ -122,7 +122,7 @@ function rt_document_start(string $title, int $theme, bool $home = false): array
 <link rel='stylesheet' href='<?= rt_project_url('Shared/styles/logo-3d.css') ?>?v=5'>
 <script type='module' src='<?= rt_project_url('Shared/scripts/logo-3d.js') ?>?v=9'></script>
 <?php endif ?>
-<link rel="stylesheet" href="<?= htmlspecialchars(rt_layout_asset('assets/layout.css'), ENT_QUOTES, 'UTF-8') ?>?v=16">
+<link rel="stylesheet" href="<?= htmlspecialchars(rt_layout_asset('assets/layout.css'), ENT_QUOTES, 'UTF-8') ?>?v=17">
 <link rel="stylesheet" href="<?= rt_project_url('Shared/styles/motion-stability.css') ?>?v=2">
 <link rel="stylesheet" href="<?= rt_project_url('Shared/styles/brand-lockup.css') ?>?v=2">
 <link rel="stylesheet" href="<?= rt_project_url('Shared/styles/mobile-navigation.css') ?>?v=3">
