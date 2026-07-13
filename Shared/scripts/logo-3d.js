@@ -99,7 +99,7 @@ hosts.forEach((host) => {
   const tick = (now) => {
     frame = 0;
     if (destroyed || !logo || !inView || document.hidden) return;
-    const revealReady = !waitForReveal || host.closest('.rt-hero')?.classList.contains('is-video-intro-complete');
+    const revealReady = !waitForReveal || host.closest('.rt-hero')?.classList.contains('is-video-logo-visible');
     if (!revealReady) {
       logo.rotation.set(-.025, 0, 0);
       logo.position.y = 0;

@@ -18,10 +18,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (video?.dataset.heroPlayback === 'intro-once') {
     let completed = false;
+    let logoRevealed = false;
     let retryArmed = false;
+    let dockTimer = 0;
     let settleTimer = 0;
+    let videoFrameCallback = 0;
     const blockedKeys = ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', ' ', 'Home', 'End'];
     const startButton = hero.querySelector('[data-intro-start]');
+    const configuredRevealAt = Number.parseFloat(video.dataset.logoRevealAt || '5.08');
+    const configuredDockDelay = Number.parseInt(video.dataset.heroDockDelay || '1500', 10);
+    const logoRevealAt = Number.isFinite(configuredRevealAt) ? configuredRevealAt : 5.08;
+    const dockDelay = Number.isFinite(configuredDockDelay) ? configuredDockDelay : 1500;
 
     video.muted = true;
     video.defaultMuted = true;
@@ -56,19 +63,65 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     lockPage();
 
+    const settleDockedHero = () => {
+      dispatchEvent(new Event('resize'));
+      if (location.hash) restoreAnchor();
+    };
+
+    const dockHero = () => {
+      clearTimeout(dockTimer);
+      dockTimer = 0;
+      hero.classList.add('is-video-intro-docked');
+      dispatchEvent(new Event('resize'));
+      clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(settleDockedHero, 1160);
+    };
+
+    const revealLogoAtImpact = () => {
+      if (logoRevealed) return;
+      logoRevealed = true;
+      hero.classList.add('is-video-logo-visible');
+      logo?.classList.add('is-visible');
+      dockTimer = window.setTimeout(dockHero, dockDelay);
+    };
+
+    const maybeRevealLogo = mediaTime => {
+      const current = Number.isFinite(mediaTime) ? mediaTime : Number(video.currentTime || 0);
+      if (current >= logoRevealAt) revealLogoAtImpact();
+    };
+
+    const monitorVideoFrame = (_now, metadata) => {
+      videoFrameCallback = 0;
+      if (completed || logoRevealed) return;
+      maybeRevealLogo(Number(metadata?.mediaTime));
+      if (!logoRevealed && video.requestVideoFrameCallback) {
+        videoFrameCallback = video.requestVideoFrameCallback(monitorVideoFrame);
+      }
+    };
+
+    const armImpactMonitor = () => {
+      if (completed || logoRevealed) return;
+      maybeRevealLogo();
+      if (!logoRevealed && video.requestVideoFrameCallback && !videoFrameCallback) {
+        videoFrameCallback = video.requestVideoFrameCallback(monitorVideoFrame);
+      }
+    };
+
     const revealAtVideoEnd = () => {
       if (completed) return;
       completed = true;
+      revealLogoAtImpact();
       hero.classList.remove('is-video-intro-playing', 'is-video-autoplay-blocked');
-      hero.classList.add('is-video-intro-complete', 'is-video-logo-visible');
-      logo?.classList.add('is-visible');
+      hero.classList.add('is-video-intro-complete');
       nav?.classList.add('is-visible');
       unlockPage();
       dispatchEvent(new Event('resize'));
-      settleTimer = window.setTimeout(() => {
-        dispatchEvent(new Event('resize'));
-        if (location.hash) restoreAnchor();
-      }, 1160);
+    };
+
+    const failOpen = () => {
+      revealLogoAtImpact();
+      dockHero();
+      revealAtVideoEnd();
     };
 
     const playIntroVideo = () => {
@@ -87,8 +140,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     startButton?.addEventListener('click', playIntroVideo);
 
+    video.addEventListener('playing', armImpactMonitor);
+    video.addEventListener('timeupdate', () => maybeRevealLogo(), { passive: true });
     video.addEventListener('ended', revealAtVideoEnd, { once: true });
-    video.addEventListener('error', revealAtVideoEnd, { once: true });
+    video.addEventListener('error', failOpen, { once: true });
+    armImpactMonitor();
 
     if (video.ended) revealAtVideoEnd();
     else if (video.readyState >= 2) playIntroVideo();
@@ -101,6 +157,9 @@ document.addEventListener('DOMContentLoaded', () => {
     addEventListener('pagehide', () => {
       document.removeEventListener('visibilitychange', resumeIntroVideo);
       startButton?.removeEventListener('click', playIntroVideo);
+      video.removeEventListener('playing', armImpactMonitor);
+      if (videoFrameCallback && video.cancelVideoFrameCallback) video.cancelVideoFrameCallback(videoFrameCallback);
+      clearTimeout(dockTimer);
       clearTimeout(settleTimer);
       unlockPage();
     }, { once: true });
