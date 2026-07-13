@@ -713,7 +713,7 @@ if (layoutRail && layoutRail.children.length > 1) {
         try { sessionStorage.setItem(sessionKey, id); } catch (_) {}
     };
     let activePreviewCard = null;
-    let previewsReady = !constrainedPreviewMode;
+    let previewsReady = !isConstrainedPreviewMode();
     const updateFocus = () => {
         const railRect = layoutRail.getBoundingClientRect();
         const center = railRect.left + railRect.width / 2;
