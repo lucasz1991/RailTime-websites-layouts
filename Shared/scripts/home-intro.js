@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (video?.dataset.heroPlayback === 'intro-once') {
     let completed = false;
     let retryArmed = false;
+    let settleTimer = 0;
     const blockedKeys = ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', ' ', 'Home', 'End'];
     const startButton = hero.querySelector('[data-intro-start]');
 
@@ -64,7 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
       nav?.classList.add('is-visible');
       unlockPage();
       dispatchEvent(new Event('resize'));
-      if (location.hash) setTimeout(restoreAnchor, 1000);
+      settleTimer = window.setTimeout(() => {
+        dispatchEvent(new Event('resize'));
+        if (location.hash) restoreAnchor();
+      }, 1160);
     };
 
     const playIntroVideo = () => {
@@ -97,6 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
     addEventListener('pagehide', () => {
       document.removeEventListener('visibilitychange', resumeIntroVideo);
       startButton?.removeEventListener('click', playIntroVideo);
+      clearTimeout(settleTimer);
       unlockPage();
     }, { once: true });
     return;

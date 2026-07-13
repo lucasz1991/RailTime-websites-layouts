@@ -18,7 +18,7 @@ Die öffentliche Vorschau läuft ohne sichtbare AI-Ordnerstruktur über nummerie
 
 Das Startvideo nutzt layoutübergreifend das echte erste Videoframe `Shared/assets/images/start3-first-frame.png` als Ladeposter. Signal Atlas startet es direkt und stumm, sperrt das Seiten-Scrollen bis zum tatsächlichen Videoende und blendet erst danach D2-3D-Logo, Navigation und Hero-Overlays ein.
 
-Noir Motion und Horizon Signature nutzen zentral `Shared/scripts/scroll-video-engine.js`. Die ersten 30 Prozent des Startvideos werden übersprungen; der verbleibende Clip wird für Scroll-, Logo- und Hero-Übergänge wieder sauber auf 0 bis 100 Prozent normiert. Signal Atlas ist davon bewusst entkoppelt; nach seinem einmaligen Startvideo bewegt sich ausschließlich die große D2-3D-Bildmarke im Hero dauerhaft über einen weichen 260-Grad-Bogen.
+Noir Motion und Horizon Signature nutzen zentral `Shared/scripts/scroll-video-engine.js`. Die ersten 30 Prozent des Startvideos werden übersprungen; der verbleibende Clip wird für Scroll-, Logo- und Hero-Übergänge wieder sauber auf 0 bis 100 Prozent normiert. Signal Atlas ist davon bewusst entkoppelt; nach seinem einmaligen Startvideo schrumpft der Hero wie in Horizon Signature auf eine kompakte Höhe und ausschließlich die große D2-3D-Bildmarke dreht sich dauerhaft in einer Richtung.
 
 Die Deutschlandkarte steht auf den Startseiten im unteren Standort-/Techniksegment links neben dem Text. In diesem Segment wird kein zusätzliches Foto verwendet.
 

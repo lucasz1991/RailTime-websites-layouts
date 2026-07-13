@@ -10,7 +10,7 @@ function rt3_home_v2(): void { $rt=rt_document_start('Signal Atlas',3,true); ?>
         <div class="sa-hero__brand" role="img" aria-label="RT Rail Time GmbH">
             <div class="sa-logo-stage" aria-hidden="true">
                 <span class="sa-orbit sa-orbit--one"></span>
-                <div class="rt-logo-3d sa-logo-3d" data-rt-logo-3d data-logo-variant="arc-260" data-logo-wait-for-reveal data-model-src="<?= rt_project_url('Codex/logo/d2/rt-logo.glb') ?>">
+                <div class="rt-logo-3d sa-logo-3d" data-rt-logo-3d data-logo-variant="full-spin" data-logo-wait-for-reveal data-model-src="<?= rt_project_url('Codex/logo/d2/rt-logo.glb') ?>">
                     <canvas aria-hidden="true"></canvas>
                     <img class="rt-logo-3d__fallback" src="<?= rt_project_url('Codex/logo/d2/rt-logo.svg') ?>" alt="" aria-hidden="true">
                 </div>

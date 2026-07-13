@@ -15,13 +15,13 @@ return [
     ],
     'assets' => [
         'logo_horizontal'=>'logo-horizontal.png','logo_dark'=>'logo-darkbg.png','hero_poster'=>'start3-first-frame.png','hero_video'=>'start3.mp4',
-        'service_images'=>['s3.jpg','s2.jpg','1.jpg','s4.jpg','s1.jpg'],
+        'service_images'=>['s3.jpg','s2.jpg','1.jpg','s4.jpg','puffer_schmierungs_leistung.png'],
         'service_images_layout1'=>[
             'stock/wagenmeister-dienstleistungen-web.jpg',
             'stock/notfalldienst-24-7-web.jpg',
             'stock/AdobeStock_721131368-web.jpg',
             'stock/sonderuntersuchungen-web.jpg',
-            'stock/pufferteller-schmieren.jpg',
+            'puffer_schmierungs_leistung.png',
         ],
         'intro_image'=>'stock/AdobeStock_721131368-web.jpg','team_image'=>'s1.jpg','equipment_image'=>'s4.jpg',
     ],

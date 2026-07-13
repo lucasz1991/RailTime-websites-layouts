@@ -72,8 +72,9 @@ hosts.forEach((host) => {
   let pointerY = 0;
   let rotationX = -.025;
   let rotationY = 0;
-  const fullSpin = ['noir-signal', 'full-spin'].includes(host.dataset.logoVariant);
-  const arc260 = host.dataset.logoVariant === 'arc-260';
+  const logoVariant = host.dataset.logoVariant;
+  const fullSpin = ['noir-signal', 'full-spin'].includes(logoVariant);
+  const strictFullSpin = logoVariant === 'full-spin';
   const waitForReveal = host.hasAttribute('data-logo-wait-for-reveal');
   const startedAt = performance.now();
   let animationStartedAt = null;
@@ -111,13 +112,10 @@ hosts.forEach((host) => {
     const targetX = -.025 + pointerY * .08;
     rotationX += (targetX - rotationX) * .07;
     if (fullSpin) {
-      rotationY = elapsed * .52;
-      logo.rotation.set(rotationX, rotationY + pointerX * .2, Math.sin(elapsed * .72) * .028);
+      rotationY = (elapsed * .52) % (Math.PI * 2);
+      const yaw = strictFullSpin ? rotationY : rotationY + pointerX * .2;
+      logo.rotation.set(rotationX, yaw, Math.sin(elapsed * .72) * .028);
       logo.position.y = Math.sin(elapsed * 1.15) * .022;
-    } else if (arc260) {
-      rotationY = Math.sin(elapsed * .55) * THREE.MathUtils.degToRad(130);
-      logo.rotation.set(rotationX, rotationY, 0);
-      logo.position.y = Math.sin(elapsed * .9) * .012;
     } else {
       const targetY = Math.sin(elapsed * .58) * .19 + pointerX * .24;
       rotationY += (targetY - rotationY) * .055;

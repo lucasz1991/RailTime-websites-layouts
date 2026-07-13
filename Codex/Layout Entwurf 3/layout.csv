@@ -5,7 +5,7 @@ Konzept;Dunkles editoriales Rail-System mit klaren Bildfenstern Signalachsen und
 Typografie;Manrope fuer Inhalte und Space Mono fuer Statuswerte Nummerierungen und Navigation
 Farben;Signalrot #e4002b Tiefschwarz #080b10 Stahlblau #10161e und technisches Papier #f3f1ec
 Startseite;Einmal direkt und stumm laufendes Startvideo mit Scroll-Sperre bis zum echten Videoende danach gestaffelter Reveal des D2-3D-Logos und aller Hero-Overlays
-Bewegung;Endlose weiche 260-Grad-Pendelrotation ausschließlich am großen Hero-Icon nach dem Videoende sowie kurze ScrollMagic-Reveals für die nachfolgenden Inhalte
+Bewegung;Nach dem Videoende schrumpft der Hero wie in Layout 5 auf 38svh und ausschließlich das große Hero-Icon dreht sich endlos in einer Richtung; kurze ScrollMagic-Reveals für die nachfolgenden Inhalte
 Leistungen;Eigenstaendiges Bildmodulraster mit fuenf Servicekarten und verlinktem Detail-Akkordeon auf der Unterseite
 Unterseiten;Bestehende Funktionsseiten fuer Leistungen Ueber uns Kontakt Impressum und Datenschutz
 Navigation;Auf der Startseite zusammen mit den Hero-Overlays am Videoende sichtbar auf Unterseiten sofort sichtbar jeweils mit der D2-Bildmarke
