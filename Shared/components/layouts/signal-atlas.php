@@ -17,7 +17,6 @@ function rt3_home_v2(): void { $rt=rt_document_start('Signal Atlas',3,true); ?>
                     <img class="rt-logo-3d__fallback" src="<?= rt_project_url('Codex/logo/d2/rt-logo.svg') ?>" alt="" aria-hidden="true">
                 </div>
             </div>
-            <img class="rt-logo-wordmark" src="<?= rt_image('logo-txt.png') ?>" alt="" aria-hidden="true">
         </div>
     </div>
     <button class="sa-video-start" type="button" data-intro-start>Startvideo abspielen</button>

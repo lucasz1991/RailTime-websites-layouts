@@ -122,8 +122,8 @@ function rt_document_start(string $title, int $theme, bool $home = false): array
 <link rel='stylesheet' href='<?= rt_project_url('Shared/styles/logo-3d.css') ?>?v=5'>
 <script type='module' src='<?= rt_project_url('Shared/scripts/logo-3d.js') ?>?v=9'></script>
 <?php endif ?>
-<link rel="stylesheet" href="<?= htmlspecialchars(rt_layout_asset('assets/layout.css'), ENT_QUOTES, 'UTF-8') ?>?v=13">
-<link rel="stylesheet" href="<?= rt_project_url('Shared/styles/motion-stability.css') ?>?v=1">
+<link rel="stylesheet" href="<?= htmlspecialchars(rt_layout_asset('assets/layout.css'), ENT_QUOTES, 'UTF-8') ?>?v=16">
+<link rel="stylesheet" href="<?= rt_project_url('Shared/styles/motion-stability.css') ?>?v=2">
 <link rel="stylesheet" href="<?= rt_project_url('Shared/styles/brand-lockup.css') ?>?v=2">
 <link rel="stylesheet" href="<?= rt_project_url('Shared/styles/mobile-navigation.css') ?>?v=3">
 </head>
@@ -165,12 +165,12 @@ function rt_document_end(bool $home = false): void {
 <script src="<?= rt_project_url('Shared/scripts/scroll-motion.js') ?>?v=7"></script>
 <script src="<?= rt_project_url('Shared/scripts/mobile-navigation.js') ?>?v=2"></script>
 <?php if ($home): ?>
-<script src="<?= htmlspecialchars(rt_layout_asset('assets/motion.js'), ENT_QUOTES, 'UTF-8') ?>?v=6"></script>
+<script src="<?= htmlspecialchars(rt_layout_asset('assets/motion.js'), ENT_QUOTES, 'UTF-8') ?>?v=7"></script>
 <script src="<?= rt_project_url('Shared/scripts/scroll-video-engine.js') ?>?v=11"></script>
 <script src="<?= rt_project_url('Shared/scripts/home-intro.js') ?>?v=19"></script>
 <?php else: ?>
 <script src="<?= rt_project_url('Shared/scripts/subpages.js') ?>?v=6"></script>
-<script src="<?= htmlspecialchars(rt_layout_asset('assets/motion.js'), ENT_QUOTES, 'UTF-8') ?>?v=6"></script>
+<script src="<?= htmlspecialchars(rt_layout_asset('assets/motion.js'), ENT_QUOTES, 'UTF-8') ?>?v=7"></script>
 <?php endif ?>
 <script src="<?= rt_project_url('Shared/scripts/public-router.js') ?>?v=1"></script>
 </body>

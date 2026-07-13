@@ -60,7 +60,9 @@ window.RailTimeMotion = (() => {
     });
   };
 
-  const ready = () => requestAnimationFrame(() => releaseCloak(false));
+  const ready = () => requestAnimationFrame(() => {
+    requestAnimationFrame(() => releaseCloak(false));
+  });
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', ready, { once: true });
   } else {

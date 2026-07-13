@@ -170,6 +170,9 @@ h1{max-width:850px;margin:16px 0 12px;font-size:clamp(38px,5vw,68px);line-height
 .carousel{position:relative;width:100%;margin-top:0}
 .carousel__head{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0 0 12px;padding:0 clamp(20px,5vw,96px)}
 .carousel__head p{margin:0;color:#89939f;font:500 10px 'DM Mono',monospace;letter-spacing:.12em;text-transform:uppercase}
+.carousel__head-tools{display:flex;align-items:center;gap:12px}
+.brand-overview-link{display:inline-flex;align-items:center;min-height:38px;padding:0 13px;border:1px solid rgba(255,255,255,.16);background:#111820;color:#fff;text-decoration:none;font:500 9px 'DM Mono',monospace;letter-spacing:.1em;text-transform:uppercase;transition:background .2s,border-color .2s}
+.brand-overview-link:hover,.brand-overview-link:focus-visible{border-color:var(--red);outline:0;background:var(--red)}
 .carousel__controls{display:flex;gap:8px}
 .carousel__control{width:42px;height:38px;border:1px solid var(--line);background:#151c24;color:#fff;font-size:22px;line-height:1;cursor:pointer;transition:background .2s,border-color .2s}
 .carousel__control:hover{background:var(--red);border-color:var(--red)}
@@ -231,7 +234,7 @@ html.lite-mode .card,html.lite-mode .card.is-before,html.lite-mode .card.is-afte
 html.lite-mode .card{opacity:.78}
 html.lite-mode .card.is-focused{opacity:1;box-shadow:none}
 html.lite-mode .iframe-preview__refresh,html.lite-mode .iframe-preview__nav,html.lite-mode .live-preview__bar,html.lite-mode .live-preview::backdrop{backdrop-filter:none}
-@media(max-width:640px){.wrap{padding-top:1vh}.carousel__head p{display:none}.card{flex-basis:96vw;height:min(760px,88vh);min-height:600px}.card__body{padding:20px 20px 15px}.card p{font-size:13px;margin-bottom:12px}.badges{margin-bottom:12px}.shots{height:auto}.iframe-device--desktop{top:16px;left:7%;width:86%}.iframe-device--tablet,.iframe-device--mobile{display:none}.iframe-preview__page{min-width:86px}.live-preview__bar{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;padding:9px 10px}.live-preview__eyebrow{display:none}.live-preview__title{font-size:14px}.live-preview__actions{gap:4px}.live-preview__device{gap:0;padding:8px 7px;font-size:0}.live-preview__device::before{margin:0}.live-preview__device[data-preview-device="tablet"],.live-preview__device[data-preview-device="mobile"]{display:none}.live-preview__close{width:36px;margin-left:2px}.live-preview__stage{padding:12px}}
+@media(max-width:640px){.wrap{padding-top:1vh}.carousel__head p{display:none}.brand-overview-link{font-size:0;padding:0 12px}.brand-overview-link::before{content:"Logo";font-size:9px}.card{flex-basis:96vw;height:min(760px,88vh);min-height:600px}.card__body{padding:20px 20px 15px}.card p{font-size:13px;margin-bottom:12px}.badges{margin-bottom:12px}.shots{height:auto}.iframe-device--desktop{top:16px;left:7%;width:86%}.iframe-device--tablet,.iframe-device--mobile{display:none}.iframe-preview__page{min-width:86px}.live-preview__bar{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;padding:9px 10px}.live-preview__eyebrow{display:none}.live-preview__title{font-size:14px}.live-preview__actions{gap:4px}.live-preview__device{gap:0;padding:8px 7px;font-size:0}.live-preview__device::before{margin:0}.live-preview__device[data-preview-device="tablet"],.live-preview__device[data-preview-device="mobile"]{display:none}.live-preview__close{width:36px;margin-left:2px}.live-preview__stage{padding:12px}}
 </style>
 </head>
 <body class="intro-active">
@@ -264,9 +267,12 @@ html.lite-mode .iframe-preview__refresh,html.lite-mode .iframe-preview__nav,html
 <section class="carousel" aria-label="Layout Entwuerfe">
     <div class="carousel__head">
         <p>Ziehe, wische oder nutze die Pfeile &ndash; fortlaufende Auswahl</p>
-        <div class="carousel__controls" aria-label="Carousel Steuerung">
-            <button class="carousel__control" type="button" data-rail-prev aria-label="Vorherige Layouts">&lsaquo;</button>
-            <button class="carousel__control" type="button" data-rail-next aria-label="Naechste Layouts">&rsaquo;</button>
+        <div class="carousel__head-tools">
+            <a class="brand-overview-link" href="Codex/logo/" target="_blank" rel="noopener">Logo &amp; Favicon Übersicht &nearr;</a>
+            <div class="carousel__controls" aria-label="Carousel Steuerung">
+                <button class="carousel__control" type="button" data-rail-prev aria-label="Vorherige Layouts">&lsaquo;</button>
+                <button class="carousel__control" type="button" data-rail-next aria-label="Naechste Layouts">&rsaquo;</button>
+            </div>
         </div>
     </div>
     <div class="grid" aria-label="Layout Karten" data-layout-rail>
