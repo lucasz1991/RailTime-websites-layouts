@@ -18,7 +18,7 @@ function rt_segment_hero(array $rt, int $theme): void {
                     <img class='rt-logo-3d__fallback' src='<?= rt_project_url('Codex/logo/d1/rt-logo.svg') ?>' alt='' aria-hidden='true'>
                 </div>
             </div>
-            <img class='rt-logo-wordmark' src='<?= rt_image('logo-txt.png') ?>' alt='Rail Time GmbH'>
+            <img class='rt-logo-wordmark' src='<?= rt_image('logo-txt-darkbg.png') ?>' alt='Rail Time GmbH'>
             <span class='rt-logo-status' aria-hidden='true'><i></i> Signal verbunden · bundesweit</span>
         </div>
     </div>
@@ -31,7 +31,7 @@ function rt_segment_hero(array $rt, int $theme): void {
     <?php rt_video_scroll_cue(); ?>
 </section>
 <?php return; endif; ?>
-<section class="rt-hero"><video <?= rt_video_attrs($rt, !in_array($theme, [1, 3, 5], true)) ?>><source src="<?= rt_video($rt['assets']['hero_video']) ?>" type="video/mp4"></video><div class="rt-intro-logo"><?php rt_logo_lockup('hero'); ?></div><div class="rt-hero-copy"><p class="rt-kicker"><?= $theme === 3 ? 'Einsatzakte / Deutschlandweit' : 'RT Rail Time GmbH' ?></p><h1 class="rt-display"><?= $title ?></h1><p class="max-w-2xl text-base md:text-lg leading-relaxed mb-8"><?= $rt['claim'] ?></p><a class="rt-button" href="#leistungen">Leistungen entdecken →</a></div><?php if (in_array($theme, [1, 3, 5], true)) rt_video_scroll_cue(); ?></section>
+<section class="rt-hero"><video <?= rt_video_attrs($rt, !in_array($theme, [1, 3, 5], true)) ?>><source src="<?= rt_video($rt['assets']['hero_video']) ?>" type="video/mp4"></video><div class="rt-intro-logo"><?php rt_logo_lockup('hero', 'd2', true); ?></div><div class="rt-hero-copy"><p class="rt-kicker"><?= $theme === 3 ? 'Einsatzakte / Deutschlandweit' : 'RT Rail Time GmbH' ?></p><h1 class="rt-display"><?= $title ?></h1><p class="max-w-2xl text-base md:text-lg leading-relaxed mb-8"><?= $rt['claim'] ?></p><a class="rt-button" href="#leistungen">Leistungen entdecken →</a></div><?php if (in_array($theme, [1, 3, 5], true)) rt_video_scroll_cue(); ?></section>
 <?php }
 
 function rt_segment_metrics(array $rt): void { ?><section class="rt-metrics" id="content-start"><?php foreach ($rt['metrics'] as $i => $metric): ?><div><small>0<?= $i + 1 ?></small><strong><?= $metric['number'] ?></strong><span><?= $metric['label'] ?></span></div><?php endforeach ?></section><?php }
@@ -40,7 +40,7 @@ function rt_segment_intro(array $rt, int $theme = 0): void {
     if ($theme === 1): ?>
 <section class="rt-section rt-intro-section rt-intro-section--noir">
     <div class="rt-intro-section__copy">
-        <div class="rt-intro-section__brand" data-reveal><?php rt_logo_lockup('content'); ?></div>
+        <div class="rt-intro-section__brand" data-reveal><?php rt_logo_lockup('content', 'd2', true); ?></div>
         <p class="rt-kicker">RT Rail Time GmbH</p>
         <h2 class="rt-title" data-reveal><?= $rt['claim'] ?></h2>
         <p class="rt-lead"><?= $rt['about_copy'] ?></p>

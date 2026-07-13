@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import subprocess
 import tempfile
+from collections import Counter
 from pathlib import Path
 
 from PIL import Image
@@ -71,6 +72,53 @@ def replace_region(path: Path, box: tuple[int, int, int, int], mark: Image.Image
     target.save(path, optimize=True)
 
 
+def time_silver_palette(wordmark: Image.Image) -> list[tuple[int, int, int]]:
+    """Read the dominant vertical fill colours directly from the TIME lettering."""
+    colours: list[tuple[int, int, int]] = []
+    for y in range(80, 251):
+        row = [
+            wordmark.getpixel((x, y))[:3]
+            for x in range(946, min(1730, wordmark.width))
+            if wordmark.getpixel((x, y))[3] >= 240
+        ]
+        if row:
+            colours.append(Counter(row).most_common(1)[0][0])
+        elif colours:
+            colours.append(colours[-1])
+    if not colours:
+        raise RuntimeError("Der TIME-Silberverlauf konnte nicht aus logo-txt.png gelesen werden.")
+    return colours
+
+
+def silver_region(
+    image: Image.Image,
+    box: tuple[int, int, int, int],
+    palette: list[tuple[int, int, int]],
+) -> None:
+    left, top, right, bottom = box
+    span = max(1, bottom - top - 1)
+    for y in range(top, min(bottom, image.height)):
+        palette_y = round((y - top) / span * (len(palette) - 1))
+        red, green, blue = palette[palette_y]
+        for x in range(max(0, left), min(right, image.width)):
+            _, _, _, alpha = image.getpixel((x, y))
+            if alpha:
+                image.putpixel((x, y), (red, green, blue, alpha))
+
+
+def create_dark_background_variant(
+    source: Path,
+    target: Path,
+    regions: list[tuple[int, int, int, int]],
+    palette: list[tuple[int, int, int]],
+) -> None:
+    with Image.open(source) as current:
+        image = current.convert("RGBA")
+    for region in regions:
+        silver_region(image, region, palette)
+    image.save(target, optimize=True)
+
+
 def main() -> None:
     ICONS.mkdir(parents=True, exist_ok=True)
     master = render_master()
@@ -93,7 +141,41 @@ def main() -> None:
         (125, 5),
     )
 
-    print("D2-Icon, globale Lockups und Favicons wurden erzeugt.")
+    with Image.open(IMAGES / "logo-txt.png") as current:
+        palette = time_silver_palette(current.convert("RGBA"))
+
+    create_dark_background_variant(
+        IMAGES / "logo-txt.png",
+        IMAGES / "logo-txt-darkbg.png",
+        [
+            (0, 334, 650, 342),
+            (650, 319, 1120, 365),
+            (1120, 334, 1734, 342),
+        ],
+        palette,
+    )
+    create_dark_background_variant(
+        IMAGES / "logo-horizontal.png",
+        IMAGES / "logo-horizontal-darkbg.png",
+        [
+            (333, 334, 1000, 342),
+            (1000, 319, 1450, 365),
+            (1450, 334, 2114, 342),
+        ],
+        palette,
+    )
+    create_dark_background_variant(
+        IMAGES / "logo-darkbg.png",
+        IMAGES / "logo-stacked-darkbg.png",
+        [
+            (0, 570, 257, 574),
+            (257, 564, 437, 582),
+            (415, 570, 670, 574),
+        ],
+        palette,
+    )
+
+    print("D2-Icon, helle/dunkle Lockups und Favicons wurden erzeugt.")
 
 
 if __name__ == "__main__":

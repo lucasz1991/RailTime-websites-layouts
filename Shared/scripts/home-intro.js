@@ -23,19 +23,31 @@ document.addEventListener('DOMContentLoaded', () => {
     let dockTimer = 0;
     let settleTimer = 0;
     let videoFrameCallback = 0;
+    let clipPositioned = false;
     const blockedKeys = ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', ' ', 'Home', 'End'];
     const startButton = hero.querySelector('[data-intro-start]');
     const configuredRevealAt = Number.parseFloat(video.dataset.logoRevealAt || '5.08');
     const configuredDockDelay = Number.parseInt(video.dataset.heroDockDelay || '1500', 10);
+    const configuredStartProgress = Number.parseFloat(video.dataset.heroStartProgress || '0');
+    const configuredPlaybackRate = Number.parseFloat(video.dataset.heroPlaybackRate || '1');
     const logoRevealAt = Number.isFinite(configuredRevealAt) ? configuredRevealAt : 5.08;
     const dockDelay = Number.isFinite(configuredDockDelay) ? configuredDockDelay : 1500;
+    const startProgress = Number.isFinite(configuredStartProgress)
+      ? Math.min(.9, Math.max(0, configuredStartProgress))
+      : 0;
+    const playbackRate = Number.isFinite(configuredPlaybackRate)
+      ? Math.min(2, Math.max(.5, configuredPlaybackRate))
+      : 1;
 
     video.muted = true;
     video.defaultMuted = true;
     video.loop = false;
-    video.autoplay = true;
+    video.autoplay = false;
     video.playsInline = true;
     video.preload = 'auto';
+    video.defaultPlaybackRate = playbackRate;
+    video.playbackRate = playbackRate;
+    video.removeAttribute('autoplay');
     video.removeAttribute('loop');
 
     scrollTo({ top: 0, left: 0, behavior: 'auto' });
@@ -124,7 +136,21 @@ document.addEventListener('DOMContentLoaded', () => {
       revealAtVideoEnd();
     };
 
+    const positionIntroClip = () => {
+      if (clipPositioned) return true;
+      if (!Number.isFinite(video.duration) || video.duration <= 0) return false;
+      const startAt = Math.min(video.duration - .05, video.duration * startProgress);
+      if (startAt > 0 && Math.abs(video.currentTime - startAt) > .025) {
+        video.currentTime = startAt;
+      }
+      clipPositioned = true;
+      return true;
+    };
+
     const playIntroVideo = () => {
+      if (!positionIntroClip()) return;
+      video.defaultPlaybackRate = playbackRate;
+      video.playbackRate = playbackRate;
       const attempt = video.play();
       if (!attempt?.catch) return;
       attempt.then(() => {

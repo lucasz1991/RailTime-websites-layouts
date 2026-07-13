@@ -45,7 +45,7 @@ function ed_header(string $title, bool $home = false): array {
 </head>
 <body class="ed-body<?= $home ? ' ed-home' : '' ?>">
 <header class="ed-nav<?= $home ? '' : ' is-visible' ?>">
-    <a class="ed-nav__logo" href="<?= ed_href('index.html') ?>"><img src="<?= ed_image($rt['assets']['logo_horizontal']) ?>" alt="<?= htmlspecialchars($rt['company']) ?>"></a>
+    <a class="ed-nav__logo" href="<?= ed_href('index.html') ?>"><img src="<?= ed_image($rt['assets']['logo_horizontal_dark']) ?>" alt="<?= htmlspecialchars($rt['company']) ?>"></a>
     <nav class="ed-nav__menu"><?php foreach ($rt['navigation'] as $i => $item): ?><a href="<?= ed_href($item['href']) ?>"><sup><?= str_pad((string)($i + 1), 2, '0', STR_PAD_LEFT) ?></sup><?= $item['label'] ?></a><?php endforeach ?></nav>
     <a class="ed-nav__hotline" href="tel:<?= $rt['phone_href'] ?>">24/7 — <?= $rt['phone'] ?></a>
 </header>
@@ -56,7 +56,7 @@ function ed_footer(array $rt): void { ?>
 <footer class="ed-footer">
     <div class="ed-footer__top">
         <p class="ed-footer__claim serif"><?= $rt['claim'] ?></p>
-        <img src="<?= ed_image($rt['assets']['logo_dark']) ?>" alt="<?= htmlspecialchars($rt['company']) ?>">
+        <img src="<?= ed_image($rt['assets']['logo_stacked_dark']) ?>" alt="<?= htmlspecialchars($rt['company']) ?>">
     </div>
     <div class="ed-footer__grid">
         <nav aria-label="Leistungen">

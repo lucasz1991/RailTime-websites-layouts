@@ -4,7 +4,7 @@ require_once __DIR__.'/../site-shell.php';
 function rt3_home_v2(): void { $rt=rt_document_start('Signal Atlas',3,true); ?>
 <main class="sa-main">
 <section class="sa-hero sa-hero--intro rt-hero is-video-intro-playing" aria-label="Rail Time Startvideo">
-    <video <?= rt_video_attrs($rt, true, false, 'auto') ?> data-hero-playback="intro-once" data-logo-reveal-at="5.08" data-hero-dock-delay="1500"><source src="<?= rt_video($rt['assets']['hero_video']) ?>" type="video/mp4"></video>
+    <video <?= rt_video_attrs($rt, false, false, 'auto') ?> data-hero-playback="intro-once" data-hero-start-progress="0.20" data-hero-playback-rate="1.15" data-logo-reveal-at="5.08" data-hero-dock-delay="1500"><source src="<?= rt_video($rt['assets']['hero_video']) ?>" type="video/mp4"></video>
     <div class="sa-hero__shade"></div>
     <div class="rt-intro-logo">
         <div class="sa-hero__brand" role="img" aria-label="RT Rail Time GmbH">

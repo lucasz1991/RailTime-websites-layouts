@@ -243,7 +243,7 @@ html.lite-mode .iframe-preview__refresh,html.lite-mode .iframe-preview__nav,html
     <div class="intro-screen__beam" aria-hidden="true"></div>
     <div class="intro-screen__rails" aria-hidden="true"><i></i><i></i></div>
     <div class="intro-screen__inner">
-        <img class="intro-screen__logo" src="<?= rt_project_url('Shared/assets/images/logo-darkbg.png') ?>" alt="RailTime GmbH">
+        <img class="intro-screen__logo" src="<?= rt_project_url('Shared/assets/images/logo-stacked-darkbg.png') ?>" alt="RailTime GmbH">
         <div class="intro-screen__mark"></div>
         <p class="intro-screen__kicker">RailTime · Layout Präsentation</p>
         <h2><span class="intro-screen__title-main">Layout</span><span class="intro-screen__title-accent">Entwürfe.</span></h2>
@@ -255,7 +255,7 @@ html.lite-mode .iframe-preview__refresh,html.lite-mode .iframe-preview__nav,html
                 <canvas aria-hidden='true'></canvas>
                 <img class='rt-logo-3d__fallback' src='<?= rt_project_url('Codex/logo/d2/rt-logo.svg') ?>' alt='' aria-hidden='true'>
             </div>
-            <img class='rt-logo-wordmark' src='<?= rt_project_url('Shared/assets/images/logo-txt.png') ?>' alt='Rail Time GmbH'>
+            <img class='rt-logo-wordmark' src='<?= rt_project_url('Shared/assets/images/logo-txt-darkbg.png') ?>' alt='Rail Time GmbH'>
         </div>
     </div>
 </section>

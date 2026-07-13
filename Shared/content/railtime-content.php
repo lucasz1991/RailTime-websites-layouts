@@ -14,7 +14,7 @@ return [
         ['href'=>'impressum.html','label'=>'Impressum'], ['href'=>'datenschutz.html','label'=>'DSGVO'],
     ],
     'assets' => [
-        'logo_horizontal'=>'logo-horizontal.png','logo_dark'=>'logo-darkbg.png','hero_poster'=>'start3-first-frame.png','hero_video'=>'start3.mp4',
+        'logo_horizontal'=>'logo-horizontal.png','logo_horizontal_dark'=>'logo-horizontal-darkbg.png','logo_dark'=>'logo-darkbg.png','logo_stacked_dark'=>'logo-stacked-darkbg.png','hero_poster'=>'start3-first-frame.png','hero_video'=>'start3.mp4',
         'service_images'=>['s3.jpg','s2.jpg','1.jpg','s4.jpg','puffer_schmierungs_leistung.png'],
         'service_images_layout1'=>[
             'stock/wagenmeister-dienstleistungen-web.jpg',

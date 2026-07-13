@@ -43,7 +43,7 @@ function cl_header(string $title, bool $home = false): array {
 </head>
 <body class="cl-body<?= $home ? ' cl-home' : '' ?>">
 <header class="cl-nav<?= $home ? '' : ' is-visible' ?>">
-    <a class="cl-nav__logo" href="<?= cl_href('index.html') ?>"><img src="<?= cl_image($rt['assets']['logo_horizontal']) ?>" alt="<?= htmlspecialchars($rt['company']) ?>"></a>
+    <a class="cl-nav__logo" href="<?= cl_href('index.html') ?>"><img src="<?= cl_image($rt['assets']['logo_horizontal_dark']) ?>" alt="<?= htmlspecialchars($rt['company']) ?>"></a>
     <nav class="cl-nav__menu"><?php foreach ($rt['navigation'] as $item): ?><a href="<?= cl_href($item['href']) ?>"><?= $item['label'] ?></a><?php endforeach ?></nav>
     <a class="cl-nav__hotline" href="tel:<?= $rt['phone_href'] ?>"><span>24/7</span><?= $rt['phone'] ?></a>
 </header>
@@ -55,7 +55,7 @@ function cl_footer(array $rt, bool $home = false): void { ?>
     <div class="cl-footer__stripe" aria-hidden="true"></div>
     <div class="cl-footer__grid">
         <div class="cl-footer__brand">
-            <img src="<?= cl_image($rt['assets']['logo_dark']) ?>" alt="<?= htmlspecialchars($rt['company']) ?>">
+            <img src="<?= cl_image($rt['assets']['logo_stacked_dark']) ?>" alt="<?= htmlspecialchars($rt['company']) ?>">
             <p><?= $rt['claim'] ?></p>
             <a class="cl-footer__phone" href="tel:<?= $rt['phone_href'] ?>"><small>Notfalldienst 24/7</small><?= $rt['phone'] ?></a>
         </div>

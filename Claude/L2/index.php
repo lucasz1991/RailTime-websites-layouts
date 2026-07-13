@@ -7,7 +7,7 @@
         <source src="<?= ed_video($rt['assets']['hero_video']) ?>" type="video/mp4">
     </video>
     <div class="ed-hero__shade" aria-hidden="true"></div>
-    <div class="ed-hero__logo"><img src="<?= ed_image($rt['assets']['logo_dark']) ?>" alt="<?= htmlspecialchars($rt['company']) ?>"></div>
+    <div class="ed-hero__logo"><img src="<?= ed_image($rt['assets']['logo_stacked_dark']) ?>" alt="<?= htmlspecialchars($rt['company']) ?>"></div>
     <div class="ed-hero__copy">
         <p class="ed-label"><?= htmlspecialchars($rt['company']) ?></p>
         <h1 class="serif">Wagenmeister im Einsatz — <em>sicher, flexibel,</em> bundesweit.</h1>

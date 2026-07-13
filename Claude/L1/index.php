@@ -7,7 +7,7 @@
         <source src="<?= cl_video($rt['assets']['hero_video']) ?>" type="video/mp4">
     </video>
     <div class="cl-hero__shade" aria-hidden="true"></div>
-    <div class="cl-hero__logo"><img src="<?= cl_image($rt['assets']['logo_dark']) ?>" alt="<?= htmlspecialchars($rt['company']) ?>"></div>
+    <div class="cl-hero__logo"><img src="<?= cl_image($rt['assets']['logo_stacked_dark']) ?>" alt="<?= htmlspecialchars($rt['company']) ?>"></div>
     <div class="cl-hero__copy">
         <p class="cl-label cl-label--light"><?= htmlspecialchars($rt['company']) ?></p>
         <h1>Wagenmeister im Einsatz. Bundesweit. Rund um die Uhr.</h1>
