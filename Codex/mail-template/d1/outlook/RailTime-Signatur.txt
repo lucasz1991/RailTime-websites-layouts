@@ -1,0 +1,16 @@
+{{VORNAME_NACHNAME}}
+{{POSITION}}
+
+RT Rail Time GmbH
+Borsteler Weg 29–31
+21423 Winsen (Luhe)
+
+T {{DURCHWAHL}}
+M {{MOBIL}}
+E {{E_MAIL}}
+Notfalldienst 24/7: 0160 1881848
+Zentrale E-Mail: kontakt@rail-time.de
+
+Geschäftsführung: {{GESCHAEFTSFUEHRUNG}}
+Registergericht: {{REGISTERGERICHT}} · HRB {{HRB}}
+USt-IdNr.: {{UST_ID}}

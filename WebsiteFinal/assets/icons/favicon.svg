@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-70 -70 1140 1140" role="img" aria-labelledby="title">
+  <title id="title">RailTime RT</title>
+  <defs>
+    <linearGradient id="rt-red" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f51b3b"/>
+      <stop offset=".55" stop-color="#e4002b"/>
+      <stop offset="1" stop-color="#b30022"/>
+    </linearGradient>
+    <linearGradient id="rt-dark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#505861"/>
+      <stop offset=".52" stop-color="#30353b"/>
+      <stop offset="1" stop-color="#171c22"/>
+    </linearGradient>
+  </defs>
+  <g stroke-linejoin="miter">
+    <path d="M0 0H738L862 152V462L755 583H617L1000 1000H731L460 658V410H675L715 364V206L673 160H0Z M0 410H205V1000H0Z"
+          fill="url(#rt-red)" stroke="#ff5a72" stroke-width="9"/>
+    <path d="M0 200H670V370H420V1000H245V370H0Z"
+          fill="url(#rt-dark)" stroke="#7d8791" stroke-width="9"/>
+  </g>
+</svg>

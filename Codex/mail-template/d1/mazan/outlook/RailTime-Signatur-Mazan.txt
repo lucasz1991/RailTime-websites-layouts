@@ -1,0 +1,13 @@
+Mazan
+RT Rail Time GmbH
+
+Borsteler Weg 29–31
+21423 Winsen (Luhe)
+
+T 0160 1881848
+E kontakt@rail-time.de
+Notfalldienst 24/7: 0160 1881848
+
+Geschäftsführung: {{GESCHAEFTSFUEHRUNG}}
+Registergericht: {{REGISTERGERICHT}} · HRB {{HRB}}
+USt-IdNr.: {{UST_ID}}
