@@ -176,6 +176,24 @@ function wf_meta(string $route): array
     return $seo[$route] ?? $seo['not_found'];
 }
 
+function wf_legal_is_complete(string $route): bool
+{
+    $required = [
+        'imprint' => ['managing_director', 'register_court', 'register_number', 'vat_id', 'liability_insurer', 'liability_insurer_address'],
+        'privacy' => ['hosting_provider', 'server_log_retention'],
+    ][$route] ?? [];
+    if ($required === []) {
+        return false;
+    }
+    $legal = wf_config()['legal'];
+    foreach ($required as $key) {
+        if (trim((string)($legal[$key] ?? '')) === '') {
+            return false;
+        }
+    }
+    return true;
+}
+
 function wf_json_ld(string $route, array $meta): array
 {
     $config = wf_config();
@@ -303,16 +321,13 @@ function rt_document_start(string $legacyTitle, int $theme, bool $home = false):
     $meta = wf_meta($route);
     $canonical = wf_site_url($meta['path']);
     $robots = (string)($meta['robots'] ?? 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1');
+    if (in_array($route, ['imprint', 'privacy'], true) && wf_legal_is_complete($route)) {
+        $robots = 'index,follow,max-image-preview:large,max-snippet:-1';
+    }
     if (filter_var(getenv('RAILTIME_NOINDEX') ?: '0', FILTER_VALIDATE_BOOL)) {
         $robots = 'noindex,nofollow';
     }
     $ogImage = wf_site_url('assets/images/' . $meta['image']);
-    $importMap = [
-        'imports' => [
-            'three' => wf_url('assets/vendor/three/build/three.module.min.js'),
-            'three/addons/' => rtrim(wf_url('assets/vendor/three/examples/jsm'), '/') . '/',
-        ],
-    ];
     ?>
 <!doctype html>
 <html lang="de">
@@ -360,7 +375,6 @@ function rt_document_start(string $legacyTitle, int $theme, bool $home = false):
 <link rel="stylesheet" href="<?= wf_escape(wf_asset('assets/css/mobile-navigation.css')) ?>">
 <link rel="stylesheet" href="<?= wf_escape(wf_asset('assets/css/logo-3d.css')) ?>">
 <link rel="stylesheet" href="<?= wf_escape(wf_asset('assets/css/standalone.css')) ?>">
-<script type="importmap"><?= json_encode($importMap, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?></script>
 <script>
 (function(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;var r=document.documentElement;r.classList.add('rt-motion-enabled','rt-motion-pending');window.__rtMotionCloakTimer=setTimeout(function(){r.classList.remove('rt-motion-enabled','rt-motion-pending')},4000)})();
 </script>

@@ -10,8 +10,8 @@ let THREE = null;
 let GLTFLoader = null;
 if (hosts.length && !liteMode) {
     try {
-        THREE = await import('three');
-        ({ GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js'));
+        THREE = await import('../vendor/three/build/three.module.min.js');
+        ({ GLTFLoader } = await import('../vendor/three/examples/jsm/loaders/GLTFLoader.js?v=2'));
     } catch (error) {
         console.warn('three.js konnte nicht geladen werden — SVG-Fallback bleibt aktiv.', error);
     }

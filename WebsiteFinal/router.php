@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 $path = rawurldecode((string)(parse_url((string)($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH) ?? '/'));
 $path = preg_replace('~/+~', '/', str_replace('\\', '/', $path)) ?? '/';
-if (str_contains($path, "\0") || preg_match('~(?:^|/)\.\.(?:/|$)|/(?:config|src)(?:/|$)|/(?:\.(?!well-known(?:/|$)))~i', $path)) {
+if (str_contains($path, "\0") || preg_match('~(?:^|/)\.\.(?:/|$)|/(?:config|src)(?:/|$)|/(?:router\.php|README\.md)$|/(?:\.(?!well-known(?:/|$)))~i', $path)) {
     http_response_code(403);
     exit('Zugriff verweigert.');
 }

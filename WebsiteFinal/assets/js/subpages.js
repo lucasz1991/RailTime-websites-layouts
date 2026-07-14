@@ -36,6 +36,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (options.updateHash) history.replaceState(null, '', `#${item.id}`);
   };
 
+  const scrollToItem = item => requestAnimationFrame(() => requestAnimationFrame(() => {
+    item?.scrollIntoView({
+      behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      block: 'start'
+    });
+  }));
+
   items.forEach(item => {
     item.querySelector('button[aria-controls]')?.addEventListener('click', () => {
       const isOpen = item.classList.contains('is-open');
@@ -54,12 +61,18 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const hashItem = location.hash ? items.find(item => `#${item.id}` === location.hash) : null;
-  if (hashItem) open(hashItem, { immediate: true });
+  if (hashItem) {
+    open(hashItem, { immediate: true });
+    scrollToItem(hashItem);
+  }
   else if (items[0]) open(items[0], { immediate: true });
 
   addEventListener('hashchange', () => {
     const item = items.find(candidate => `#${candidate.id}` === location.hash);
-    if (item) open(item, { immediate: true });
+    if (item) {
+      open(item, { immediate: true });
+      scrollToItem(item);
+    }
   });
 
   addEventListener('resize', () => {

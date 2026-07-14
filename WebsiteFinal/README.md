@@ -12,7 +12,7 @@ In `config/site.php` fehlen absichtlich Angaben, die aus dem vorhandenen Projekt
 - Berufshaftpflichtversicherung
 - Hosting-Anbieter und Speicherdauer der Server-Protokolle
 
-Solange diese Werte fehlen, zeigen Impressum und Datenschutz sichtbare gelbe Hinweise und sind per `noindex` von der Suchmaschinen-Indexierung ausgeschlossen. Die Rechtstexte sollten vor dem Livegang fachlich geprüft werden.
+Solange diese Werte fehlen, zeigen Impressum und Datenschutz sichtbare gelbe Hinweise und sind per `noindex` von der Suchmaschinen-Indexierung ausgeschlossen. Nach vollständiger Ergänzung werden sie automatisch indexierbar und in die Sitemap aufgenommen. Die Rechtstexte sollten vor dem Livegang fachlich geprüft werden.
 
 ## Veröffentlichung auf Apache / Plesk
 

@@ -44,6 +44,11 @@ function wf_render_sitemap(): never
 {
     header('Content-Type: application/xml; charset=UTF-8');
     $routes = ['home', 'services', 'about', 'contact'];
+    foreach (['imprint', 'privacy'] as $legalRoute) {
+        if (wf_legal_is_complete($legalRoute)) {
+            $routes[] = $legalRoute;
+        }
+    }
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     echo "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n";
     foreach ($routes as $route) {

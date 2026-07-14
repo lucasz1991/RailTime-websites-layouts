@@ -12,11 +12,16 @@ DirectoryIndex index.php
 
     # Interne PHP-, Konfigurations- und Sicherungsdateien nie öffentlich ausliefern.
     RewriteRule ^(?:config|src)(?:/|$) - [F,L,NC]
+    RewriteRule ^(?:router\.php|README\.md)$ - [F,L,NC]
     RewriteRule (^|/)\.(?!well-known/) - [F,L]
     RewriteRule \.(?:bak|conf|dist|ini|log|sql|sh|yml|yaml)$ - [F,L,NC]
 
     # Zertifikatsvalidierung nicht auf HTTPS umleiten.
     RewriteRule ^\.well-known/acme-challenge/ - [L,NC]
+
+    # Hauptdomain vereinheitlichen, damit nur die www-Variante indexiert wird.
+    RewriteCond %{HTTP_HOST} ^rail-time\.de(?::\d+)?$ [NC]
+    RewriteRule ^ https://www.rail-time.de%{REQUEST_URI} [R=301,L,NE]
 
     # HTTPS erzwingen; lokale Entwicklung und korrekt terminierte Proxys ausnehmen.
     RewriteCond %{HTTP_HOST} !^(?:localhost|127\.0\.0\.1)(?::\d+)?$ [NC]
