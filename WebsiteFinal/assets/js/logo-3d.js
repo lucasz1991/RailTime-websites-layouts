@@ -10,8 +10,8 @@ let THREE = null;
 let GLTFLoader = null;
 if (hosts.length && !liteMode) {
     try {
-        THREE = await import('https://esm.sh/three@0.161.0');
-        ({ GLTFLoader } = await import('https://esm.sh/three@0.161.0/examples/jsm/loaders/GLTFLoader.js'));
+        THREE = await import('three');
+        ({ GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js'));
     } catch (error) {
         console.warn('three.js konnte nicht geladen werden — SVG-Fallback bleibt aktiv.', error);
     }
@@ -169,7 +169,7 @@ hosts.forEach((host) => {
   };
   document.addEventListener('visibilitychange', onVisibilityChange);
 
-  const modelUrl = host.dataset.modelSrc || new URL('../../Codex/logo/d1/rt-logo.glb', import.meta.url).href;
+  const modelUrl = host.dataset.modelSrc || new URL('../models/rt-logo.glb', import.meta.url).href;
   new GLTFLoader().load(modelUrl, ({ scene: model }) => {
     if (destroyed) {
       model.traverse((object) => {

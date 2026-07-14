@@ -1,6 +1,43 @@
 <?php
 require_once __DIR__ . '/Shared/config/layout-registry.php';
 
+// Keep the implementation folder private in the visible public URL. The
+// presentation itself stays the single source of truth; only its project-root
+// relative Shared links need one fewer parent segment below /logo-mockup/.
+if (($_GET['rt_public'] ?? '') === 'logo-mockup') {
+    if (($_GET['rt_logo_redirect'] ?? '') === '1') {
+        header('Location: ' . rt_project_url('logo-mockup/'), true, 301);
+        exit;
+    }
+
+    $logoOverviewFile = __DIR__ . '/Codex/logo/index.html';
+
+    if (!is_file($logoOverviewFile)) {
+        http_response_code(404);
+        header('Content-Type: text/plain; charset=UTF-8');
+        echo 'Logo-Mockup nicht gefunden.';
+        exit;
+    }
+
+    $logoOverview = file_get_contents($logoOverviewFile);
+    if ($logoOverview === false) {
+        http_response_code(500);
+        header('Content-Type: text/plain; charset=UTF-8');
+        echo 'Logo-Mockup konnte nicht geladen werden.';
+        exit;
+    }
+
+    $logoOverview = str_replace(
+        ['../../Shared/', 'href="../../"'],
+        ['../Shared/', 'href="../"'],
+        $logoOverview
+    );
+
+    header('Content-Type: text/html; charset=UTF-8');
+    echo $logoOverview;
+    exit;
+}
+
 // All public routes enter through index.php. Some managed Plesk setups deny
 // direct HTTP access to every other PHP file, while internal includes remain
 // available to the application.
@@ -268,7 +305,7 @@ html.lite-mode .iframe-preview__refresh,html.lite-mode .iframe-preview__nav,html
     <div class="carousel__head">
         <p>Ziehe, wische oder nutze die Pfeile &ndash; fortlaufende Auswahl</p>
         <div class="carousel__head-tools">
-            <a class="brand-overview-link" href="Codex/logo/" target="_blank" rel="noopener">Logo &amp; Favicon Übersicht &nearr;</a>
+            <a class="brand-overview-link" href="<?= rt_project_url('logo-mockup/') ?>" target="_blank" rel="noopener">Logo &amp; Favicon Übersicht &nearr;</a>
             <div class="carousel__controls" aria-label="Carousel Steuerung">
                 <button class="carousel__control" type="button" data-rail-prev aria-label="Vorherige Layouts">&lsaquo;</button>
                 <button class="carousel__control" type="button" data-rail-next aria-label="Naechste Layouts">&rsaquo;</button>

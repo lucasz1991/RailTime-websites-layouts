@@ -124,6 +124,8 @@ return [
         'vat_id' => '',
         'liability_insurer' => '',
         'liability_insurer_address' => '',
+        'hosting_provider' => '',
+        'server_log_retention' => '',
     ],
     'mail' => [
         'enabled' => filter_var(getenv('RAILTIME_MAIL_ENABLED') ?: '1', FILTER_VALIDATE_BOOL),

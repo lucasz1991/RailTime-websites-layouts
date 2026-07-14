@@ -1,25 +1,71 @@
 document.addEventListener('DOMContentLoaded', () => {
   const items = [...document.querySelectorAll('[data-accordion-item]')];
-  const open = item => {
-    items.forEach(other => {
-      const panel = other.querySelector('[data-panel]');
-      const button = other.querySelector('button');
-      const active = other === item;
-      other.classList.toggle('is-open', active);
-      button?.setAttribute('aria-expanded', String(active));
-      if (panel) panel.style.maxHeight = active ? `${panel.scrollHeight}px` : '0px';
-    });
+  const closeTimers = new WeakMap();
+
+  const setPanelState = (item, active, immediate = false) => {
+    const panel = item.querySelector('[data-panel]');
+    const button = item.querySelector('button[aria-controls]');
+    const oldTimer = panel ? closeTimers.get(panel) : 0;
+    if (oldTimer) clearTimeout(oldTimer);
+
+    item.classList.toggle('is-open', active);
+    button?.setAttribute('aria-expanded', String(active));
+    if (!panel) return;
+
+    if (active) {
+      panel.hidden = false;
+      requestAnimationFrame(() => { panel.style.maxHeight = `${panel.scrollHeight}px`; });
+      return;
+    }
+
+    panel.style.maxHeight = '0px';
+    if (immediate) {
+      panel.hidden = true;
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      if (!item.classList.contains('is-open')) panel.hidden = true;
+      closeTimers.delete(panel);
+    }, 560);
+    closeTimers.set(panel, timer);
   };
 
-  items.forEach(item => item.querySelector('button')?.addEventListener('click', () => open(item)));
+  const open = (item, options = {}) => {
+    if (!item) return;
+    items.forEach(other => setPanelState(other, other === item, Boolean(options.immediate)));
+    if (options.updateHash) history.replaceState(null, '', `#${item.id}`);
+  };
+
+  items.forEach(item => {
+    item.querySelector('button[aria-controls]')?.addEventListener('click', () => {
+      const isOpen = item.classList.contains('is-open');
+      if (isOpen) setPanelState(item, false);
+      else open(item, { updateHash: true });
+    });
+  });
+
   document.querySelectorAll('[data-service-tile]').forEach((tile, index) => {
     tile.addEventListener('click', event => {
       event.preventDefault();
-      open(items[index]);
-      items[index]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const item = items[index];
+      open(item, { updateHash: true });
+      item?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
     });
   });
-  if (items[0]) open(items[0]);
+
+  const hashItem = location.hash ? items.find(item => `#${item.id}` === location.hash) : null;
+  if (hashItem) open(hashItem, { immediate: true });
+  else if (items[0]) open(items[0], { immediate: true });
+
+  addEventListener('hashchange', () => {
+    const item = items.find(candidate => `#${candidate.id}` === location.hash);
+    if (item) open(item, { immediate: true });
+  });
+
+  addEventListener('resize', () => {
+    const openPanel = document.querySelector('[data-accordion-item].is-open [data-panel]');
+    if (openPanel) openPanel.style.maxHeight = `${openPanel.scrollHeight}px`;
+  }, { passive: true });
 
   if (!window.ScrollMagic || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
@@ -31,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ...document.querySelectorAll('form, .rt-emergency')
   ];
 
-  animated.forEach((element, index) => {
+  [...new Set(animated)].forEach((element, index) => {
     element.classList.add('rt-scroll-bound');
     element.parentElement?.classList.add('rt-motion-clip');
     const fromTop = index % 2 === 0;

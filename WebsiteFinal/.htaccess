@@ -1,0 +1,68 @@
+AddDefaultCharset UTF-8
+DirectoryIndex index.php
+
+<IfModule mod_mime.c>
+    AddType model/gltf-binary .glb
+    AddType application/manifest+json .webmanifest
+    AddType font/woff2 .woff2
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Interne PHP-, Konfigurations- und Sicherungsdateien nie öffentlich ausliefern.
+    RewriteRule ^(?:config|src)(?:/|$) - [F,L,NC]
+    RewriteRule (^|/)\.(?!well-known/) - [F,L]
+    RewriteRule \.(?:bak|conf|dist|ini|log|sql|sh|yml|yaml)$ - [F,L,NC]
+
+    # Zertifikatsvalidierung nicht auf HTTPS umleiten.
+    RewriteRule ^\.well-known/acme-challenge/ - [L,NC]
+
+    # HTTPS erzwingen; lokale Entwicklung und korrekt terminierte Proxys ausnehmen.
+    RewriteCond %{HTTP_HOST} !^(?:localhost|127\.0\.0\.1)(?::\d+)?$ [NC]
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !^https$ [NC]
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L,NE]
+
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    RewriteRule ^ index.php [L,QSA]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always unset X-Powered-By
+    Header unset X-Content-Type-Options
+    Header unset Referrer-Policy
+    Header unset X-Frame-Options
+    Header unset Permissions-Policy
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+    Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; connect-src 'self'; font-src 'self'; form-action 'self'; frame-ancestors 'self'; img-src 'self' data:; media-src 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
+    <FilesMatch "\.(?:css|js|mjs|png|jpe?g|webp|svg|mp4|glb|woff2)$">
+        Header set Cache-Control "public, max-age=604800, stale-while-revalidate=86400"
+    </FilesMatch>
+    <FilesMatch "\.(?:woff2)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+</IfModule>
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 7 days"
+    ExpiresByType application/javascript "access plus 7 days"
+    ExpiresByType image/jpeg "access plus 30 days"
+    ExpiresByType image/png "access plus 30 days"
+    ExpiresByType image/webp "access plus 30 days"
+    ExpiresByType image/svg+xml "access plus 30 days"
+    ExpiresByType video/mp4 "access plus 30 days"
+    ExpiresByType model/gltf-binary "access plus 30 days"
+    ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css text/javascript application/javascript application/json application/manifest+json application/xml image/svg+xml
+</IfModule>

@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const nav = document.querySelector('.rt-nav');
   const target = document.querySelector('#content-start');
   if (!hero) return;
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const introClipStart = .30;
   const introSpeedMultiplier = 1.15;
@@ -22,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let retryArmed = false;
     let dockTimer = 0;
     let settleTimer = 0;
+    let introGuardTimer = 0;
     let videoFrameCallback = 0;
     let clipPositioned = false;
     const blockedKeys = ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', ' ', 'Home', 'End'];
@@ -49,6 +51,16 @@ document.addEventListener('DOMContentLoaded', () => {
     video.playbackRate = playbackRate;
     video.removeAttribute('autoplay');
     video.removeAttribute('loop');
+
+    if (reducedMotion) {
+      video.pause();
+      hero.classList.remove('is-video-intro-playing', 'is-video-autoplay-blocked');
+      hero.classList.add('is-video-logo-visible', 'is-video-intro-complete', 'is-video-intro-docked');
+      logo?.classList.add('is-visible');
+      nav?.classList.add('is-visible');
+      requestAnimationFrame(restoreAnchor);
+      return;
+    }
 
     scrollTo({ top: 0, left: 0, behavior: 'auto' });
     hero.classList.add('is-video-intro-playing');
@@ -122,6 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const revealAtVideoEnd = () => {
       if (completed) return;
       completed = true;
+      clearTimeout(introGuardTimer);
       revealLogoAtImpact();
       hero.classList.remove('is-video-intro-playing', 'is-video-autoplay-blocked');
       hero.classList.add('is-video-intro-complete');
@@ -170,6 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
     video.addEventListener('timeupdate', () => maybeRevealLogo(), { passive: true });
     video.addEventListener('ended', revealAtVideoEnd, { once: true });
     video.addEventListener('error', failOpen, { once: true });
+    introGuardTimer = window.setTimeout(failOpen, 20000);
     armImpactMonitor();
 
     if (video.ended) revealAtVideoEnd();
@@ -187,6 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (videoFrameCallback && video.cancelVideoFrameCallback) video.cancelVideoFrameCallback(videoFrameCallback);
       clearTimeout(dockTimer);
       clearTimeout(settleTimer);
+      clearTimeout(introGuardTimer);
       unlockPage();
     }, { once: true });
     return;

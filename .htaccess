@@ -29,6 +29,13 @@ AddType model/gltf-binary .glb
 
     # Per-directory rewrites work in the domain root and in every XAMPP
     # subdirectory. A fixed RewriteBase must not be used here.
+    # Public, neutral alias for the internally stored logo presentation.
+    # The visible URL and all D1/D2 asset URLs stay below /logo-mockup/.
+    RewriteRule ^logo-mockup$ index.php?rt_public=logo-mockup&rt_logo_redirect=1 [END,QSA,NC]
+    RewriteRule ^logo-mockup/index\.html?$ index.php?rt_public=logo-mockup&rt_logo_redirect=1 [END,QSA,NC]
+    RewriteRule ^logo-mockup/$ index.php?rt_public=logo-mockup [END,QSA,NC]
+    RewriteRule ^logo-mockup/(d[12]/.+)$ Codex/logo/$1 [END,NC]
+
     RewriteRule ^layouts/?$ index.php [END,QSA,NC]
     # Plesk may forbid direct requests to PHP scripts other than index.php.
     # Keep index.php as the only public PHP front controller.
